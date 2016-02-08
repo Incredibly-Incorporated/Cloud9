@@ -1,0 +1,25 @@
+term.clear()
+term.setCursorPos(1,1)
+local lastX, lastY
+
+local parentWindow = window.create(term.current(), 5, 5, 10, 10)
+local childWindow = window.create(parentWindow, 2, 2, 1, 1)
+childWindow.write("!")
+
+term.setCursorPos(1,1)
+local xPos, yPos = childWindow.getPosition()
+print("Child window is initially at "..xPos.."x"..yPos..".")
+lastX, lastY = term.getCursorPos()
+
+parentWindow.reposition(10,10)
+
+term.setCursorPos(lastX,lastY)
+xPos, yPos = childWindow.getPosition()
+print("After moving the parent window, child window still registers as being at "..xPos.."x"..yPos..".")
+lastX, lastY = term.getCursorPos()
+
+childWindow.reposition(7,7)
+
+term.setCursorPos(lastX,lastY)
+xPos, yPos = childWindow.getPosition()
+print("After moving the child window, it now registers as being at "..xPos.."x"..yPos..".")

@@ -1,0 +1,196 @@
+--[[
+// API: 'button'
+// DIR: 'Hydra/apis'
+// PRA: 'debugger, gui, text'
+--]]
+
+--[[PRA:]]
+os.loadAPI("Hydra/apis/debugger")
+os.loadAPI("Hydra/apis/gui")
+os.loadAPI("Hydra/apis/text")
+
+--[[ VER BOX:
+// +-------------------------------------------------------------------+
+// | Version: Alpha 08.06.15, Beta comments coming soon!               |
+// +-------------------------------------------------------------------+
+--]]
+
+--[[ DOC BOX:
+// This API works similar to the lamina API, however with a little more
+// functionality. When a button is created, it is assigned with a unique
+// ID if not provided, in order to keep the global environment clean.
+// Similar to the lamina API, once an object is created, it is returned
+// as a table, with internal functions that can be called. This is the
+// API used in the lamina API, when concerning button functionality with
+// windows. Buttons can be placed anywhere, and are given a window object
+// in order to give it easier control.
+// ------------------------------------------------
+// DOCUMENTATION: FUNCTION: 'create':
+// This is the function you need to call in order to receive your object
+// with the functable listed at the top of this API. You can pass an external
+// table object, no object at all, or declare right in the argument properties.
+// ------------------------------------------------
+--]]
+
+--[[ DOCUMENTATION: NAMESPACE: 'stud'
+// This is the namespace used as the basis for all button
+// objects. Buttons act as individual objects. However, they can be linked
+// in a single event, and once their properties are defined, you can check
+// that information to activate a particular event. As you would expect from
+// a typical button. The functions documented in the namespace take your
+// button as the first parameter. 
+--]]
+
+stud           = {}
+stud.names     = {}
+stud.prototype = {
+	name              = "Button",
+	width             = false,
+	height            = 1,
+	startX            = 1,
+	startY            = 1,
+	widthPadding      = 1,
+	heightPadding     = 1,
+	centerX           = true,
+	centerY           = true,
+	button_color      = colors.red,
+	button_font_color = colors.white
+}
+
+stud.mt = {
+	__index = stud.prototype
+}
+
+--[[ Functable: '_functions'
+// REFERENCE: API Table below for arguments.
+//
+--]]
+
+local _functions = {
+	display = function(object, visible)
+		if not object then
+			error("[HC] <ERR> 'button:display', no button found!", 2)
+		elseif type(object) ~= "table" then
+			error("[HC] <ERR> 'button:display, invalid object type! Table required.", 2)
+		end
+
+		if not object.width then
+			object.width = string.len(object.name)
+		end
+
+		if not visible then
+			visible = true
+		end
+
+		if not object.terminal then
+			object.terminal = term.current()
+		end
+
+		if not object.parent then
+			object.parent = hydra_term
+		end
+
+		if not object.buffer then
+			object.buffer = hydra_buffer
+		end
+
+		-- Creating Buffer Object
+		local newButton = object.name
+		newButton = window.create(object.buffer, object.startX, object.startY, object.width, object.height, visible)
+	
+		-- Drawing Button
+		gui.drawBox({
+			terminal = newButton,
+			boxType  = "filled",
+			color    = object.button_color,
+			startX   = 1,
+			startY   = 1,
+			endX     = object.width,
+			endY     = object.height
+		})
+
+		-- Writing Button Text
+		text.display({
+			text          = object.name,
+			font_color    = object.button_font_color,
+			back_color    = object.button_color,
+			coord_x       = object.startX,
+			coord_y       = object.startY,
+			wrapper       = "concat",
+			terminal      = newButton,
+			center_x      = object.centerX,
+			center_y      = object.centerY,
+			cenBox_width  = object.width,
+			cenBox_height = object.height
+		})
+	end,
+}
+
+--[[ Function: 'create'
+// REFERENCE: FAQ for using properties arguments.
+// ---------PROPERTIES---------
+// object :: TABLE :: OPTIONAL: "Your button object with your desired
+//                               pre-defined arguments. Similar to the
+//                               lamina API all missing information is
+//                               defaulted to the metatable 'stud'."
+// **NOTE: Refer to Metatable for optional custom definitions! Refer to FAQ!
+//
+--]]
+
+local checkName = function(nameTable, name)
+	local data = {
+		start    = nil,
+		stop     = nil,
+		numValue = nil,
+		strValue = nil,
+		iterator = 1
+	}
+
+	for k, v in pairs(nameTable) do
+		if tostring(v) == tostring(name) then
+			while true do
+				if string.find(v, "_%d+$") then
+					data.start, data.stop = string.find(v, "_%d+$")
+					data.strVale          = tostring(string.sub(v, 1, data.start))
+					data.numValue         = tonumber(string.sub(v, data.start + 1, data.stop)) + 1
+					name                  = tostring(data.strVale..data.numValue)
+					break
+				elseif tostring(v.."_"..data.iterator) ~= tostring(name) then
+					name = tostring(v.."_"..data.iterator)
+					break
+				end
+			end
+		end
+	end
+	table.insert(stud.names, name)
+	return name
+end
+
+new = function(object)
+	if object and type(object) ~= "table" then
+		error("[HC] <ERR> 'button:new', invalid object type! Table required.", 2)
+	end
+
+	if object then
+		setmetatable(object, stud.mt)
+		object.name = checkName(stud.names, object.name)
+
+		for k, v in pairs(_functions) do
+			object[k] = v
+		end
+
+		return object
+	else
+		local newButton = {}
+		setmetatable(newButton, stud.mt)
+		newButton.name = checkName(stud.names, newButton.name)
+
+		for k, v in pairs(_functions) do
+			newButton[k] = v
+		end
+
+		return newButton
+	end
+end
+
+--[[END OF DOCUMENT]]--

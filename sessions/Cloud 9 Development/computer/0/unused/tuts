@@ -1,0 +1,8 @@
+local dog = {}
+
+local mtDog = {__call = function(table)
+    print("I am now a functable!")
+end }
+
+setmetatable(dog, mtDog)
+dog()

@@ -1,0 +1,106 @@
+-- Defining Window Borders
+        data.win_startX, data.win_startY = newWindow.getPosition()
+        data.win_endX                    = data.win_startX + object.width
+        data.win_bottomY                 = data.win_startY + object.height
+        
+        -- Drawing Window
+        paintutils.drawBox(data.win_startX, data.win_startY + 1, data.win_endX, data.win_bottomY, colors.lightGray)
+        paintutils.drawLine(data.win_startX, data.win_startY, data.win_startX, data.win_startY, object.titlebar_color)
+        
+        if object.hasShadow == true then
+            paintutils.drawLine(data.win_startX + 1, data.win_bottomY + 1, data.win_endX + 1, data.win_bottomY + 1, colors.black)
+            paintutils.drawLine(data.win_endX + 1, data.win_startY + 1, data.win_endX + 1, data.win_bottomY + 1, colors.black)
+        end
+    
+        -- Drawing Window Titlebar Interface
+        local interfaceMinimize = "|-|"
+        local interfaceMaximize = "[+]"
+        local interfaceClose    = " X "
+
+        -- Saving About 40 Lines of Code Here...
+        local setColor = function(variable, color_variable)
+            if variable then
+                if color_variable ~= colors.white then
+                    newWindow.setTextColor(colors.white)
+                else
+                    newWindow.setTextColor(colors.lightGray)
+                end
+            else
+                if color_variable ~= colors.gray then
+                    newWindow.setTextColor(colors.gray)
+                else
+                    newWindow.setTextColor(colors.black)
+                end
+            end
+        end
+
+        -- Drawing Minimize Button
+        newWindow.setCursorPos(data.win_endX - 9, data.win_startY)
+        setColor(object.canMinimize, object.titlebar_color)
+        newWindow.setBackgroundColor(object.titlebar_color)
+        newWindow.write(interfaceMinimize)
+
+        -- Drawing Maximize Button
+        newWindow.setCursorPos(data.win_endX - 6, data.win_startY)
+        setColor(object.canMaximize, object.titlebar_color)
+        newWindow.setBackgroundColor(object.titlebar_color)
+        newWindow.write(interfaceMaximize)
+
+        -- Drawing Close Button
+        newWindow.setCursorPos(data.win_endX - 3, data.win_startY)
+        setColor(object.canClose, object.titlebar_color)
+        newWindow.setBackgroundColor(colors.red)
+        newWindow.write(interfaceClose)
+
+        -- Displaying Text
+        text.display({
+            text = object.text, 
+            font_color = object.font_color, 
+            back_color = object.back_color, 
+            coord_x = data.win_startX, 
+            coord_y = data.win_startY + 1, 
+            wrapper = "newLine", 
+            terminal = object.terminal, 
+            center_x = object.centerText, 
+            center_y = object.centerText, 
+            cenBox_width = data.win_endX, 
+            cenBox_height = data.win_bottomY
+        })
+
+        if object.moveable == true then
+            local running = true
+            while running do
+                data.win_startX, data.win_startY = newWindow.getPosition()
+                data.win_endX                    = data.win_startX + object.width
+                data.win_bottomY                 = data.win_startY + object.height
+    
+                local event, clicker, xPos, yPos = os.pullEventRaw()
+                if event == "mouse_click" and clicker == 1 and yPos == data.win_startY then
+                    local prevColor = object.titlebar_color
+                    object.titlebar_color = colors.gray
+                    if event == "mouse_drag" then
+                        window.reposition(xPos, yPos, object.width, object.height)
+                    end
+                    object.titlebar_color = prevColor
+                end
+            end
+        end
+-- Snipped Code After Redo:
+        -- TEMP FUNCTION: Debugger
+        --[[local debugWindow = function()
+            local w, h = hydra_term.getSize()
+            data.win_startX = object.startX
+            data.win_startY = object.startY
+            data.win_endX   = object.width
+            data.win_endY   = object.width
+            local info1 = "startX: "..tostring(data.win_startX).." | endX: "..tostring(data.win_endX)
+            local info2 = "startY: "..tostring(data.win_startY).." | endY: "..tostring(data.win_endY)
+            hydra_term.setTextColor(colors.lime)
+            hydra_term.setBackgroundColor(colors.black)
+            hydra_term.clear()
+            hydra_term.setCursorPos(w - string.len(tostring(info1)), h - 1)
+            hydra_term.write(info1)
+            hydra_term.setCursorPos(w - string.len(tostring(info2)), h)
+            hydra_term.write(info2)
+        end
+        -- END TEMP ZONE]]

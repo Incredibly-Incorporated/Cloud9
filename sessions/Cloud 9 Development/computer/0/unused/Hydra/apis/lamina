@@ -1,0 +1,330 @@
+--[[
+// API: 'lamina'
+// DIR: 'Hydra/apis'
+// PRA: '[button, debugger, gui, text]'
+--]]
+
+--[[PRA:]]
+os.loadAPI("Hydra/apis/button")
+os.loadAPI("Hydra/apis/debugger")
+os.loadAPI("Hydra/apis/gui")
+os.loadAPI("Hydra/apis/text")
+
+--[[ DOC BOX:
+// If you used a thesaurus then you can probably already
+// guess what this API is for. If not, then let me explain.
+// This is the HydraOS windows API. Not named windows for
+// non-confusion from CC's own window API. The core of this
+// API is to provide a namespace for all windows loaded on
+// the screen. All information remains in the Global table,
+// to keep things easy for developers using this API.
+// Refer to function documentation and the FAQ for using
+// special types of nomenclature.
+// ------------------------------------------------
+// DOCUMENTATION: FUNCTABLE: 'new':
+// Create a new lamina. Any non-defined characteristics
+// will fall back to the namespace globally declared when
+// this API is loaded into your CC environment. The default
+// characteristics are documented above the namespace.
+// ------------------------------------------------
+--]]
+
+--[[ DOCUMENTATION: NAMESPACE: 'lam'
+// This is the namespace used as the parent of all 
+// its corresponding childs. That is, the new laminas
+// you call is referred to as the "off-spring". The
+// functions documented below take your lamina as the
+// first parameter. 
+--]]
+
+lam           = {}
+lam.names     = {}
+lam.prototype = {
+    name                = "Lamina",
+    width               = 15,
+    height              = 10,
+    startX              = 5,
+    startY              = 5,
+    text                = "N/A",
+    titlebar_color      = colors.blue,
+    titlebar_font_color = colors.white,
+    font_color          = colors.black,
+    back_color          = colors.white,
+    centerText_x        = true,
+    centerText_y        = true,
+    moveable            = true,
+    canClose            = true,
+    resizeable          = true,
+    hasShadow           = true,
+    canMinimize         = true,
+    canMaximize         = true,
+    buttons             = false
+}
+
+lam.mt = {
+    __index = lam.prototype
+}
+
+--[[ Functable: '_functions'
+// REFERENCE: API Table below for arguments.
+// 
+--]]
+
+local _functions = {
+
+    --[[ Function: 'display'
+    // REFERENCE: FAQ for using metatable arguments.
+    // ---------PROPERTIES---------
+    // object  :: TABLE   :: REQUIRED: "Your lamina to be displayed. Establish your
+    //                                  lamina with a lamina.new() call first!"
+    // visible :: BOOLEAN :: REQUIRED: "Whether or not your lamina is visible."
+    //
+    --]]
+
+    display = function(object, visible)
+        -- Local Variables:
+        local data = {
+            win_startX = nil,
+            win_startY = nil,
+            win_endX   = nil,
+            win_endY   = nil,
+            txt_startX = 2,
+            txt_startY = 3
+        }
+        
+        -- Checking Variables:
+        if not object then
+            error("[HC] <ERR> 'lamina:display', No lamina found!", 2)
+        elseif type(object) ~= "table" then
+            error("[HC] <ERR> 'lamina:display', Invalid object type! Table required.", 2)
+        end
+    
+        if not visible then
+            visible = true
+        end
+
+        if not object.terminal then
+            object.terminal = term.current()
+        end
+    
+        if not object.parent then
+            object.parent = hydra_term
+        end
+
+        if not object.buffer then
+            object.buffer = hydra_buffer
+        end
+
+        -- Creating Window Variable:
+        local newWindow = object.name
+        newWindow = window.create(object.buffer, object.startX, object.startY, object.width, object.height, visible)
+
+        -- Defining Window Properties:
+        local posUpdate = function()
+            local winX, winY = newWindow.getPosition()
+            data.win_startX  = winX
+            data.win_startY  = winY
+            data.win_endX    = winX + object.width - 1 -- To cover start displacement.
+            data.win_endY    = winY + object.height - 1 -- Same as above...
+        end
+        posUpdate()
+        
+        -- Defining Window Colors:
+        newWindow.setBackgroundColor(object.back_color)
+        newWindow.setTextColor(object.font_color)
+        newWindow.clear()
+
+        -- Drawing Window Titlebar Interface:
+        local interfaceMinimize = "|-|"
+        local interfaceMaximize = "[+]"
+        local interfaceClose    = " X "
+
+        -- Drawing Titlebar Function:
+        local updateTitlebar = function()
+            gui.drawLine({
+                terminal = newWindow,
+                lineType = "horizontal",
+                color    = object.titlebar_color,
+                startX   = 1,
+                startY   = 1,
+                length   = object.width
+            })
+
+            newWindow.setTextColor(object.titlebar_font_color)
+            newWindow.setBackgroundColor(object.titlebar_color)
+            newWindow.setCursorPos(object.width - 8, 1)
+            newWindow.write(interfaceMinimize)
+            newWindow.setCursorPos(object.width - 5, 1)
+            newWindow.write(interfaceMaximize)
+            newWindow.setCursorPos(object.width - 2, 1)
+            newWindow.setBackgroundColor(colors.red)
+            newWindow.write(interfaceClose)
+
+            -- Writing Titlebar: 
+            text.display({
+                text          = object.name,
+                font_color    = object.titlebar_font_color,
+                back_color    = object.titlebar_color,
+                coord_x       = 1,
+                coord_y       = 1,
+                wrapper       = "concat",
+                terminal      = newWindow,
+                center_x      = false,
+                center_y      = false,
+                cenBox_width  = object.width - 8,
+                cenBox_height = 1
+            })
+        end
+        updateTitlebar()
+
+        -- Drawing Border Window:
+        local updateBorder = function()
+            gui.drawBox({
+                terminal = newWindow,
+                boxType  = "open",
+                color    = colors.lightGray,
+                startX   = 1,
+                startY   = 2,
+                endX     = object.width,
+                endY     = object.height
+            })
+        end
+        updateBorder()
+
+        -- Write Window Content:
+        text.display({
+            text          = object.text,
+            font_color    = object.font_color,
+            back_color    = object.back_color,
+            coord_x       = data.txt_startX,
+            coord_y       = data.txt_startY,
+            wrapper       = "newLine",
+            terminal      = newWindow,
+            center_x      = object.centerText_x,
+            center_y      = object.centerText_y,
+            cenBox_width  = object.width - 1,
+            cenBox_height = object.height - 1
+        })
+        updateBorder()
+        
+        -- Draw Buttons if Applicable
+        if buttons then
+            for i = 1, table.maxn(buttons) do
+                for k, v in pairs(buttons) do
+                    newWindow.setCursorPos(buttons[k].startX, buttons[k].startY)
+                    buttons[k]:display(true)
+                end
+            end
+        end
+
+        -- Moving Function:
+        local moveWindow = function(toX, toY)
+            object.parent.redraw()
+            newWindow.reposition(toX, toY, object.width, object.height)
+        end
+
+        -- Event Handler:
+        local prevColor = object.titlebar_color
+        local running   = true
+        local canMove   = false
+
+        while running do
+            local event, clicker, clickX, clickY = os.pullEvent()
+
+            posUpdate()
+
+            if event == "mouse_click" and clicker == 1 and clickX >= data.win_startX and clickX <= data.win_endX - 8 and clickY == data.win_startY then
+                if not canMove then
+                    object.titlebar_color = colors.gray
+                    updateTitlebar()
+                    canMove = true
+                else
+                    object.titlebar_color = prevColor
+                    updateTitlebar()
+                    canMove = false
+                end
+            end
+
+            if event == "mouse_drag" and clicker == 1 and canMove then
+                moveWindow(clickX, clickY)
+            end
+
+            if clicker == 2 and clickX >= data.win_startX and clickX <= data.win_endX and clickY >= data.win_startY and clickY <= data.win_endY then
+                running = false
+            end -- LAST DEV HERE: Its been a long time comin', so enjoy your move window some more :)
+            -- After your done geekin' out, clean up this function a bit...I mean A LOT... then start implementing more features such as
+            -- color correction, adding more logic to check to see if the window can ACTUALLY be moved, etc.
+            -- Once that is done, work on a button API, and get buttons hooked up into these windows! ;)
+            -- Possibly Support for Monitors? If so, kinda like Windows 10 Tablet mode? Everything goes full screen?
+        end
+    end,
+}
+
+--[[ Function: 'new'
+// REFERENCE: FAQ for using metatable arguments.
+// ---------PROPERTIES---------
+// object :: TABLE :: OPTIONAL: "Your lamina table with your desired
+//                               pre-defined arguments. Because this
+//                               API is designed through metatables
+//                               any missing information is defaulted."
+// **NOTE: Refer to Metatable for optional custom definitions! Refer to FAQ!             
+//
+--]]
+
+local checkName = function(nameTable, name)
+    local data = {
+        start    = nil,
+        stop     = nil,
+        numValue = nil,
+        strValue = nil,
+        iterator = 1
+    }
+
+    for k, v in pairs(nameTable) do
+        if tostring(v) == tostring(name) then
+            while true do
+                if string.find(v, "_%d+$") then
+                    data.start, data.stop = string.find(v, "_%d+$")
+                    data.strValue         = tostring(string.sub(v, 1, data.start))
+                    data.numValue         = tonumber(string.sub(v, data.start + 1, data.stop)) + 1
+                    name                  = tostring(data.strValue..data.numValue)
+                    break
+                elseif tostring(v.."_"..data.iterator) ~= tostring(name) then
+                    name = tostring(v.."_"..data.iterator)
+                    break
+                end
+            end
+        end
+    end
+    table.insert(lam.names, name)
+    return name
+end
+
+new = function(object)
+    if object and type(object) ~= "table" then
+        error("[HC] <ERR> 'lam:new', Invalid object type! Table required.", 2)
+    end
+
+    if object then
+        setmetatable(object, lam.mt)
+        object.name = checkName(lam.names, object.name)
+
+        for k, v in pairs(_functions) do
+            object[k] = v
+        end
+
+        return object
+    else
+        local newLamina = {}
+        setmetatable(newLamina, lam.mt)
+        newLamina.name = checkName(lam.names, newLamina.name)
+
+        for k, v in pairs(_functions) do
+            newLamina[k] = v
+        end
+
+        return newLamina
+    end
+end
+
+--[[END OF DOCUMENT]]--

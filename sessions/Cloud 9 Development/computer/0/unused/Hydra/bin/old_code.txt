@@ -1,0 +1,6 @@
+TIME: 8:57 PM
+DAY_: 7/20/2015
+CODE: FROM(debugger)
+
+log({var = properties.vars, dir = "Hydra/core/log.txt", from = "debug.compare:properties.vars"})
+log({var = properties.names, dir = "Hydra/core/log.txt", from = "debug.compare:properties.names"})

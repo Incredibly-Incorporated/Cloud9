@@ -1,0 +1,129 @@
+--[[
+// SCR: 'crash'
+// DIR: 'Hydra/scripts'
+// PRA: 'debugger, text'
+--]]
+
+--[[PRA:]]
+os.loadAPI("Hydra/apis/debugger")
+os.loadAPI("Hydra/apis/text")
+
+--[[ VER BOX:
+// +-------------------------------------------------------------------+
+// | Version: Beta: 08.5.15, Check comments for final realease notes!  |
+// +-------------------------------------------------------------------+
+--]]
+
+--[[ DOC BOX:
+// This script is used for advanced error catching.
+// There is only one function, and it is used to display
+// the error you wish to catch aesthetically.
+// ------------------------------------------------
+// DOCUMENTATION: FUNCTION: 'displayError':
+// This function requires four arguments, the first being
+// the error. After the error is received it will display 
+// the classic 'blue screen of death' with the error 
+// attached. The second argument is an optional icon to
+// display for effect. This can be any image of your choosing.
+// The last two being the position of the image.
+// ------------------------------------------------
+--]]
+
+--[[ Function: 'displayError'
+// REFERENCE: FAQ for using properties arguments.
+// ---------PROPERTIES---------
+// err      :: STRING :: REQUIRED: "The error you wish to display."
+// ico      :: STRING :: OPTIONAL: "The path of the icon you wish to
+//                                  display!"
+// ico_xPos :: #      :: REQUSITE: "Needed if you have an image. 
+//                                  The xPos of the image."
+// ico_yPos :: #      :: REQUSITE: "Needed if you have an image. 
+//                                  The yPos of the image."
+//
+--]]
+
+displayError = function(err, ico, ico_xPos, ico_yPos)
+    local w, h = term.getSize()
+
+    -- Setting Up Display
+    term.native()
+    term.setBackgroundColor(colors.blue)
+    term.setTextColor(colors.white)
+    term.setCursorPos(1, 1)
+    term.clear()
+
+    -- Writing Help Message & Error Message
+    local helpMsg = {
+        "The Hydra OS has encountered an error. Please report the following error ",
+        "<HC:/'>in red<HC:/'>",
+        " to its current developer: ",
+        "<HC:/n>",
+        "<HC:/n>",
+        tostring(err)
+    } 
+
+    local helpFontColors = {
+        colors.white,
+        colors.red,
+        colors.white,
+        colors.black,
+        colors.red
+    }
+
+    local helpBackColors = {
+        colors.blue,
+        colors.blue,
+        colors.blue,
+        colors.blue,
+        colors.cyan
+    }
+
+    text.display({
+        text       = helpMsg, 
+        font_color = helpFontColors, 
+        back_color = helpBackColors, 
+        coord_y    = 1, 
+        wrapper    = "newLine", 
+        center_x   = true
+    })
+
+    -- Writing Other Critical Data
+    text.display({
+        text       = "Hydra Build > "..hydra_build..":<HC:/n>Press Any Key...", 
+        font_color = colors.white, 
+        back_color = colors.blue, 
+        coord_x    = 1, 
+        coord_y    = h - 1, 
+        wrapper    = "concat"
+    })
+
+    -- Displaying Image if Available
+    if ico then
+        if not ico_xPos then
+            error("[HC] <ERR> 'crash.displayError:icoPos', x position required for image!", 2)
+        end
+        if not ico_yPos then
+            error("[HC] <ERR> 'crash.displayError:icoPos', y position required for image!", 2)
+        end
+
+        local img = paintutils.loadImage(ico)
+        paintutils.drawImage(img, ico_xPos, ico_yPos)
+    end
+
+    -- Writing Error to File:
+    debugger.log({
+        var = err,
+        dir = "Hydra/core/developer/crash.txt",
+        from = "Reported from Crash Script:"
+    })
+
+    -- Waiting for Event
+    while true do
+        local event = os.pullEvent()
+        if event == "key" then
+            os.reboot()
+        end
+    end
+end
+
+--[[END OF DOCUMENT]]--

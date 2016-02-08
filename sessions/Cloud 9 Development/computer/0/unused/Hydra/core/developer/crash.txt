@@ -1,0 +1,150 @@
+LOGGED @ 9:29 AM FROM: Reported from Crash Script:
+"pcall: This is a test!"
+---
+LOGGED @ 6:39 AM FROM: Reported from Crash Script:
+"pcall: [HC] <ERR> boot:sys_failed"
+---
+LOGGED @ 7:38 AM FROM: Reported from Crash Script:
+"pcall: [HC] <ERR> boot:sys_failed"
+---
+LOGGED @ 9:20 AM FROM: Reported from Crash Script:
+"pcall: [HC] <ERR> boot:sys_failed"
+---
+LOGGED @ 10:51 AM FROM: Reported from Crash Script:
+"Cannot serialize type function"
+---
+LOGGED @ 1:58 PM FROM: Reported from Crash Script:
+"error in error handling"
+---
+LOGGED @ 7:24 AM FROM: Reported from Crash Script:
+"Cannot serialize type function"
+---
+LOGGED @ 12:35 PM FROM: Reported from Crash Script:
+"Cannot serialize type function"
+---
+LOGGED @ 3:45 PM FROM: Reported from Crash Script:
+LOGGED @ 10:13 AM FROM: Reported from Crash Script:
+LOGGED @ 10:59 AM FROM: Reported from Crash Script:
+LOGGED @ 10:14 AM FROM: Reported from Crash Script:
+LOGGED @ 3:17 PM FROM: Reported from Crash Script:
+---
+LOGGED @ 7:42 AM FROM: Reported from Crash Script:
+"lamina:132: [HC] <ERR> debug:log, cannot serialize type function!"
+---
+LOGGED @ 11:46 AM FROM: Reported from Crash Script:
+"lamina:132: [HC] <ERR> debug:log, cannot serialize type function!"
+---
+LOGGED @ 12:43 PM FROM: Reported from Crash Script:
+"lamina:132: [HC] <ERR> debug:log, cannot serialize type function!"
+---
+LOGGED @ 2:40 PM FROM: Reported from Crash Script:
+"lamina:132: [HC] <ERR> debug:log, cannot serialize type function!"
+---
+LOGGED @ 6:19 AM FROM: Reported from Crash Script:
+"lamina:132: [HC] <ERR> debug:log, cannot serialize type function!"
+---
+LOGGED @ 6:39 AM FROM: Reported from Crash Script:
+"lamina:132: [HC] <ERR> debug:log, cannot serialize type function!"
+---
+LOGGED @ 10:36 AM FROM: Reported from Crash Script:
+"lamina:132: [HC] <ERR> debug:log, cannot serialize type function!"
+---
+LOGGED @ 8:17 AM FROM: Reported from Crash Script:
+"window:248: bad argument: double expected, got nil"
+---
+LOGGED @ 10:01 AM FROM: Reported from Crash Script:
+"window:248: bad argument: double expected, got nil"
+---
+LOGGED @ 11:31 AM FROM: Reported from Crash Script:
+"window:248: bad argument: double expected, got nil"
+---
+LOGGED @ 5:32 PM FROM: Reported from Crash Script:
+"lamina:117: attempt to index ? (a nil value)"
+---
+LOGGED @ 8:26 AM FROM: Reported from Crash Script:
+"lamina:121: attempt to call nil"
+---
+LOGGED @ 5:12 PM FROM: Reported from Crash Script:
+"lamina:121: attempt to call nil"
+---
+LOGGED @ 5:37 PM FROM: Reported from Crash Script:
+"lamina:121: attempt to call nil"
+---
+LOGGED @ 7:21 AM FROM: Reported from Crash Script:
+"lamina:121: attempt to call nil"
+---
+LOGGED @ 12:13 PM FROM: Reported from Crash Script:
+"window:247: bad argument: double expected, got nil"
+---
+LOGGED @ 8:27 AM FROM: Reported from Crash Script:
+"gui:154: attempt to call nil"
+---
+LOGGED @ 5:07 PM FROM: Reported from Crash Script:
+"lamina:235: attempt to compare nil with number"
+---
+LOGGED @ 7:45 AM FROM: Reported from Crash Script:
+"lamina:235: attempt to compare nil with number"
+---
+LOGGED @ 3:04 PM FROM: Reported from Crash Script:
+"window:37: Too long without yielding"
+---
+LOGGED @ 4:21 PM FROM: Reported from Crash Script:
+"window:56: Too long without yielding"
+---
+LOGGED @ 5:01 PM FROM: Reported from Crash Script:
+"window:37: Too long without yielding"
+---
+LOGGED @ 6:20 AM FROM: Reported from Crash Script:
+"window:290: Too long without yielding"
+---
+LOGGED @ 7:31 AM FROM: Reported from Crash Script:
+"window:52: Too long without yielding"
+---
+LOGGED @ 6:35 AM FROM: Reported from Crash Script:
+"lamina:240: attempt to concatenate string and nil"
+---
+LOGGED @ 11:46 AM FROM: Reported from Crash Script:
+"lamina:254: attempt to compare __le on nil and number"
+---
+LOGGED @ 11:46 AM FROM: Reported from Crash Script:
+"Terminated"
+---
+LOGGED @ 9:20 AM FROM: Reported from Crash Script:
+"pcall: This is a test"
+---
+LOGGED @ 12:14 PM FROM: Reported from Crash Script:
+"pcall: This is a test"
+---
+LOGGED @ 2:54 PM FROM: Reported from Crash Script:
+"lamina:222: attempt to compare __le on nil and number"
+---
+LOGGED @ 7:19 AM FROM: Reported from Crash Script:
+"boot:63: [HC] <ERR> 'interface.compile:failed_load', unable to load 'Hydra/apis/lamina' API!"
+---
+LOGGED @ 5:28 PM FROM: Reported from Crash Script:
+"pcall: This is a test."
+---
+LOGGED @ 5:45 PM FROM: Reported from Crash Script:
+"boot:63: [HC] <ERR> 'interface.compile:failed_load', unable to load 'Hydra/apis/lamina' API!"
+---
+LOGGED @ 8:38 AM FROM: Reported from Crash Script:
+"boot:63: [HC] <ERR> 'interface.compile:failed_load', unable to load 'Hydra/apis/lamina' API!"
+---
+LOGGED @ 11:36 AM FROM: Reported from Crash Script:
+"boot:63: [HC] <ERR> 'interface.compile:failed_load', unable to load 'Hydra/apis/lamina' API!"
+---
+LOGGED @ 5:32 PM FROM: Reported from Crash Script:
+"boot:63: [HC] <ERR> 'interface.compile:failed_load', unable to load 'Hydra/apis/lamina' API!"
+---
+LOGGED @ 6:04 AM FROM: Reported from Crash Script:
+"boot:63: [HC] <ERR> 'interface.compile:failed_load', unable to load 'Hydra/apis/lamina' API!"
+---
+LOGGED @ 7:43 AM FROM: Reported from Crash Script:
+"boot:105: attempt to index ? (a nil value)"
+---
+LOGGED @ 3:25 PM FROM: Reported from Crash Script:
+"boot:102: attempt to index ? (a nil value)"
+---
+LOGGED @ 8:49 AM FROM: Reported from Crash Script:
+"Terminated"
+---

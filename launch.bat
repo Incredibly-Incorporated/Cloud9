@@ -1,1 +1,1 @@
-java -Dcom.xtansia.ccemu.path="D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9" -jar ccemuredux-launcher-1.8.9.jar
+java -Dcom.xtansia.ccemu.path="D:\Documents\GitHub\Cloud9" -jar ccemuredux-launcher-1.8.9.jar

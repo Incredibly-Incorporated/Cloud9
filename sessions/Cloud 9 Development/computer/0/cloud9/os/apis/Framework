@@ -17,22 +17,39 @@ file to use in conjunction with the executing script.
 
 > Arguments:
 
-[name]: "Name of the framework file."
+[file]     : "Name of the framework file."
+[directory]: "Name of your working directory. If you
+              are unsure, use [shell.dir()]."
 
 <>
 --]]
 
-function create(name)
-	local file = name or "nil"
-
-	if type(name) ~= "string" then
-		error("File must be string!", 2)
+function create(file, directory)
+	-- # Checking Variables:
+	if not file then error("A file name is required!", 2) end
+	if not directory then error("A directory path is required!", 2) end
+	
+	if type(file) ~= "string" or type(directory) ~= "string" then
+		error("Arguments must be type string!", 2)
 	end
 
-	if not fs.exists(name) then
-		file = fs.open(fs.getDir(shell.dir()).."/"..name, "w")
-		file.close()
+	-- # Declaring Local Variables:
+	local path = nil
+
+	if string.find(file, ".fw") then
+		path = directory.."/"..file
+	else
+		path = directory.."/"..file..".fw"
+	end 
+
+	-- # Code:
+
+	if not fs.exists(path) then
+		new_file = fs.open(path, "w")
+		new_file.writeLine(file.."_settings = {}")
 	end
+
+	new_file.close()
 end
 
 -- End of Document

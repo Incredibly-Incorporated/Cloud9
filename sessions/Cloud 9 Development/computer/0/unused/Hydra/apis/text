@@ -1,0 +1,594 @@
+--[[
+// API: 'text'
+// DIR: 'Hydra/apis'
+// PRA: 'debugger'
+--]]
+
+--[[PRA:]]
+os.loadAPI("Hydra/apis/debugger")
+
+--[[ VER BOX:
+// +-------------------------------------------------------------------+
+// | Version: Alpha 08.5.15, Check beta comments for upcoming updates! |
+// +-------------------------------------------------------------------+
+--]]
+
+--[[ DOC BOX:
+// This API holds the key to aesthetic quality found within the OS.
+// The functions used in this API allow you to manage every aspect
+// of text such as where the text is placed, what color the text
+// should be, and what terminal it should go to! Read all doc
+// boxes carefully to ensure you are inputting the right information!
+// Don't worry though, the debugger API has your back if you mess up!
+// ---------------------------------------------------------------------
+// DOCUMENTATION: FUNCTION: 'performLiteral'
+// This function should only be called by users who know what they are
+// doing with it. I left the function un-localized to the API because I
+// figured someone might want this available to another API, or program.
+// ---------------------------------------------------------------------
+// DOCUMENTATION: FUNCTION: 'center'
+// This text control function allows the developer to center any text
+// based upon how many characters the string is, and how wide, or tall,
+// the output terminal is. This function also allows you to shrink the
+// "center box" in order to center around a pre-defined perimeter. 
+// This is useful for programs that are utilizing windows. This function
+// does not need text, and will center based on numerical input as well.
+// ---------------------------------------------------------------------
+// DOCUMENTATION: FUNCTION: 'display'
+// This is the heart of the text control API. This function allows the
+// developer to output any information, and control how it is displayed
+// in a wide range of options. 
+// ---------------------------------------------------------------------
+--]]
+
+--[[ Library: 'Literal HC Strings'
+// REFERENCE: FAQ for using HC literal strings.
+// ----------------------------
+// In order to maintain a robust text API, I figured it would be nice to
+// have custom literal strings to perform actions found in Lua's default
+// literal strings. Currently, the term API cannot process Lua's standard
+// literal strings, and hence requires the developer to build their own.
+// Below is a list of these custom literal strings, to use them, read the
+// FAQ for more information.
+//
+--]]
+
+local literals = {
+    newLine = "<HC:/n>", -- Creates a new line.
+    tab     = "<HC:/t>", -- Creates a " " (space).
+    tabExt  = "<HC:/v>", -- Creates a "    " (4 spaces).
+    bSlash  = "<HC://>", -- Creates a '\' backslash.
+    quote   = "<HC:/'>"  -- Creates a " quotation mark.
+}
+
+--[[ Function: 'performLiteral'
+// REFERENCE: FAQ for using regular arguments.
+// ---------PROPERTIES---------
+// str      :: STRING :: REQUIRED: "What string to analyze for a literal."
+// terminal :: STRING :: OPTIONAL: "What terminal to output literal
+//                                  performance to."
+//
+--]]
+
+performLiteral = function(str, terminal)
+    if not terminal then
+        terminal = term.current()
+    end
+
+    local _functions = {
+        newLine = function(s)
+            local x, y        = terminal.getCursorPos()
+            local start, stop = s:find("<HC:/n>")
+            terminal.write(s:sub(1, start - 1))
+            local new_s       = s:sub(stop + 1, s:len()) 
+            local new_l       = y + 1
+            return new_s, new_l
+        end,
+        tab = function(s)
+            local new_s = s:gsub("<HC:/t>", " ")
+            return new_s
+        end,
+        tabExt = function(s)
+            local new_s = s:gsub("<HC:/v>", "    ")
+            return new_s
+        end,
+        bSlash = function(s)
+            local new_s = s:gsub("<HC://>", "\\")
+            return new_s
+        end,
+        quote = function(s)
+            local new_s = s:gsub("<HC:/'>", "\"")
+            return new_s
+        end
+    }
+
+    for k, v in pairs(literals) do
+        if str:find(v) then
+            return _functions[k](str)
+        end
+    end
+end
+
+--[[ Function: 'center'
+// REFERENCE: FAQ for using properties arguments.
+// ---------PROPERTIES---------
+// length        :: STR/TAB/# :: OPTIONAL: "How long your string is, or numerical length." +--------------------------------------+
+// start_x       :: #         :: OPTIONAL: "Where to center from horizontally."            | NOTE: For start_x and start_y        |
+// start_y       :: #         :: OPTIONAL: "Where to center from vertically."              | you must choose one or the other.    |
+// roundType     :: STR       :: OPTIONAL: "'ceil', to round up. 'floor', to round down.   | Although both are optional the       |
+//                                          Default is rounded up."                        | function requires at least one       |
+// cenBox_width  :: #         :: OPTIONAL: "How wide your center box is."                  | input to return an output. Otherwise,|
+// cenBox_height :: #         :: OPTIONAL: "How tall your center box is."                  | the terminal size is used as basis.  |
+// xDisplace     :: #         :: OPTIONAL: "If you don't like the rounding, displace it."  +--------------------------------------+
+// yDisplace     :: #         :: OPTIONAL: "If you don't like the rounding, displace it."
+// 
+--]]
+
+center = function(properties)
+    -- LOCAL VARS:
+    local w, h        = term.getSize()
+
+    local data = {
+        xPos = nil,
+        yPos = nil,
+        hold = nil
+    }
+
+    local var_types   = {
+        start_x       = "number",
+        start_y       = "number",
+        roundType     = "string",
+        cenBox_width  = "number",
+        cenBox_height = "number",
+        xDisplace     = "number",
+        yDisplace     = "number"
+    }
+
+    local var_names   = {
+        "start_x",
+        "start_y",
+        "roundType",
+        "cenBox_width",
+        "cenBox_height",
+        "xDisplace",
+        "yDisplace"
+    }
+
+    -- CHECKING VARS:
+    if not type(properties) == "table" then
+        error("[HC] <ERR> Arguments are not defined in a table!", 2)
+    end
+
+    if properties.roundType then
+        if properties.roundType ~= "ceil" and properties.roundType ~= "floor" then
+            error("[HC] <ERR> 'text.display:val_type', roundType must be declared with 'ceil' or 'floor'!", 2)
+        end
+    end
+
+    if not properties.roundType then
+        properties.roundType = "ceil"
+    end
+
+    if not properties.cenBox_width then
+        properties.cenBox_width = w
+    end
+
+    if not properties.cenBox_height then
+        properties.cenBox_height = h
+    end
+
+    if not properties.start_x then
+        properties.start_x = 1
+    end
+
+    if not properties.start_y then
+        properties.start_y = 1
+    end
+
+    if not properties.xDisplace then
+        properties.xDisplace = 0
+    end
+
+    if not properties.yDisplace then
+        properties.yDisplace = 0
+    end
+
+    if not properties.length then
+        properties.length = ""
+    end
+
+    if type(properties.length) ~= "string" and type(properties.length) ~= "number" and type(properties.length) ~= "table" then
+        error("[HC] <ERR> 'text.center:length', must be defined with string, table, or number!", 2)
+    end
+
+    if type(properties.length) == "string" then
+        properties.length = string.len(properties.length)
+    end
+
+    if type(properties.length) == "table" then
+        data.hold = 0
+        for i = 1, table.maxn(properties.length) do
+            data.hold = data.hold + string.len(properties.length[i])
+        end
+        properties.length = data.hold
+    end
+
+    debugger.compare({
+        vars  = properties, 
+        types = var_types, 
+        names = var_names
+    })
+
+    -- CODE:
+    if properties.roundType == "floor" then
+        data.xPos = properties.start_x + math.floor(properties.cenBox_width / 2) - math.floor(properties.length / 2) + properties.xDisplace
+        data.yPos = math.floor(properties.cenBox_height / 2) + properties.yDisplace -- properties.start_y
+    else
+        data.xPos = properties.start_x + math.ceil(properties.cenBox_width / 2) - math.ceil(properties.length / 2) + properties.xDisplace
+        data.yPos = math.ceil(properties.cenBox_height / 2) + properties.yDisplace -- properties.start_y
+    end
+    return data.xPos, data.yPos
+end
+
+--[[ Function: 'display'
+// REFERENCE: FAQ for using properties arguments.
+// ---------PROPERTIES---------
+// text          :: STR/TAB :: REQUIRED: "What we're writing."
+// font_color    :: COL/TAB :: OPTIONAL: "What the text color(s) is/are."
+// back_color    :: COL/TAB :: OPTIONAL: "What the background color(s) is/are."
+// coord_x       :: #       :: OPTIONAL: "Where to place the text horzontally."
+// coord_y       :: #       :: OPTIONAL: "Where to place the text vertically."
+// wrapper       :: STRING  :: OPTIONAL: "Options: 'newLine', 'concat'."
+// terminal      :: STRING  :: OPTIONAL: "What terminal to output to."
+// center_x      :: BOOLEAN :: OPTIONAL: "Whether or not to automatically center
+//                                        on the horizontal plane."
+// center_y      :: BOOLEAN :: OPTIONAL: "Whether or not to automatically center
+//                                        on the vertical plane."
+// roundType     :: STR     :: OPTIONAL: "'ceil', to round up. 'floor', to round down.
+//                                        Default is rounded up."
+// cenBox_width  :: #       :: OPTIONAL: "Predefined width of your 'center' area."
+// cenBox_height :: #       :: OPTIONAL: "Predefined height of your 'center' area."
+// xDisplace     :: #       :: OPTIONAL: "If you don't like the rounding, displace it."
+// yDisplace     :: #       :: OPTIONAL: "If you don't like the rounding, displace it."
+//
+--]]
+
+display = function(properties) 
+    -- LOCAL VARS:
+    local sentence    = {}
+    local coloring    = {}
+
+    local data        = {
+        yAdd          = nil,
+        hold          = nil,
+        color         = nil,
+        stringLen     = nil,
+        totalLen      = nil,
+        startX        = nil,
+        startY        = nil
+    }
+
+    local var_types   = {
+        coord_x       = "number",
+        coord_y       = "number",
+        wrapper       = "string",
+        center_x      = "boolean",
+        center_y      = "boolean",
+        roundType     = "string",
+        cenBox_width  = "number",
+        cenBox_height = "number",
+        xDisplace     = "number",
+        yDisplace     = "number"
+    }
+
+    local var_names   = {
+        "coord_x",
+        "coord_y",
+        "wrapper",
+        "center_x",
+        "center_y",
+        "roundType",
+        "cenBox_width",
+        "cenBox_height",
+        "xDisplace",
+        "yDisplace"
+    }
+
+    -- CHECKING VARS:
+    if not type(properties) == "table" then
+        error("[HC] <ERR> Arguments are not defined in a table!", 2)
+    end
+
+    if properties.roundType then
+        if properties.roundType ~= "ceil" and properties.roundType ~= "floor" then
+            error("[HC] <ERR> 'text.display:val_type', roundType must be declared with 'ceil' or 'floor'!", 2)
+        end
+    end
+
+    if type(properties.text) ~= "string" and type(properties.text) ~= "table" then
+        properties.text = tostring(properties.text)
+    elseif type(properties.text) == "string" then
+        properties.text = {properties.text}
+    end
+
+    if type(properties.font_color) ~= "number" and type(properties.font_color) ~= "table" then
+        error("[HC] <ERR> 'text.display:val_type', font_color must be a color or colors in a table.", 2)
+    end
+
+    if type(properties.back_color) ~= "number" and type(properties.back_color) ~= "table" then
+        error("[HC] <ERR> 'text.display:val_type', back_color must be a color or colors in a table.", 2)
+    end
+
+    -- DECLARING VARS:
+    if properties.terminal then
+        local ok = pcall(peripheral.wrap(tostring(properties.terminal)))
+        if ok then
+            properties.terminal = peripheral.wrap(properties.terminal)
+        end
+    else
+        properties.terminal = term.current()
+    end
+
+    local x, y = properties.terminal.getCursorPos()
+    local w, h = properties.terminal.getSize()
+
+    if not properties.wrapper then
+        properties.wrapper = "newLine"
+    end
+
+    if not properties.roundType then
+        properties.roundType = "ceil"
+    end
+
+    if not properties.cenBox_width then
+        properties.cenBox_width = w
+    end
+
+    if not properties.cenBox_height then
+        properties.cenBox_height = h
+    end
+
+    if not properties.xDisplace then
+        properties.xDisplace = 0
+    end
+
+    if not properties.yDisplace then
+        properties.yDisplace = 0
+    end
+
+    if type(properties.font_color) == "number" then
+        properties.terminal.setTextColor(properties.font_color)
+    end
+
+    if type(properties.back_color) == "number" then
+        properties.terminal.setBackgroundColor(properties.back_color)
+    end
+
+    if properties.center_x == true then
+        if not properties.coord_x then
+            properties.coord_x = 1
+        end
+    else
+        if not properties.coord_x then
+            properties.coord_x = x
+        end
+    end
+
+    if properties.center_y == true then
+        if not properties.coord_y then
+            properties.coord_y = 1
+        end
+    else
+        if not properties.coord_y then
+            properties.coord_y = y
+        end
+    end
+
+    for i = 1, table.maxn(properties.text) do
+        table.insert(coloring, string.len(tostring(properties.text[i])))
+    end
+
+    debugger.compare({
+        vars  = properties, 
+        types = var_types, 
+        names = var_names
+    })
+
+    -- CODE:
+    for i = 1, table.maxn(properties.text) do -- BETA COMMENT: This section wraps the user's text into an easier to manipulate table. This could be simplified with a string.gsub.
+        local word = {
+            start  = 0,
+            stop   = 0
+        }
+
+        while true do
+            word.start = word.start + 1 -- Ensuring we're starting at the start of the string
+            if string.find(tostring(properties.text[i]), " ", word.start) == nil then -- Checks to see if we have any string left.
+                table.insert(sentence, string.sub(tostring(properties.text[i]), word.start, string.len(tostring(properties.text[i]))))
+                break 
+            else
+                _, word.stop = string.find(tostring(properties.text[i]), " ", word.start) -- 'Clips' the string of words depending on whether or not they're spaced.
+                table.insert(sentence, string.sub(tostring(properties.text[i]), word.start, word.stop))
+                word.start   = word.stop -- Picking up where we left off!
+            end
+        end
+    end
+
+    data.startX = properties.coord_x
+    data.startY = properties.coord_y
+
+    -- Position Section
+    local posUpdate = function(xAdd, yAdd, ignoreLiteral) -- BETA COMMENT: This function needs a simplification overhaul...
+        -- LOCAL VARS:
+        local temp_sentence  = {}
+        data.hold            = 0
+
+        -- CHECKING VARS:
+        if not xAdd then
+            xAdd = 0
+        end
+        if not yAdd then
+            yAdd = 0
+        end
+
+        -- CODE:
+        local running = true
+        for i = 1, table.maxn(sentence) do
+            if tostring(sentence[i]) ~= "" then -- Cleaning up the table a bit...
+                local temp_string = nil
+                for _, v in pairs(literals) do -- Checks for HC literals.
+                    for match in string.gmatch(tostring(sentence[i]), v.."*") do -- Ensures each literal is accounted for.
+                        temp_string = string.gsub(tostring(sentence[i]), v.."*", "")
+
+                        if v == "<HC:/n>" then
+                            running = false
+                            break                         
+                        end
+                    end
+                end
+
+                if not running then
+                    break
+                end
+
+                if temp_string then -- If we found some this string is the trimmed version.
+                    data.hold = data.hold + string.len(tostring(temp_string))
+                else
+                    data.hold = data.hold + string.len(tostring(sentence[i]))
+                end
+    
+                if data.hold <= properties.cenBox_width then -- Ensures we're not going off the screen.
+                    if temp_string then
+                        table.insert(temp_sentence, tostring(temp_string))
+                    else
+                        table.insert(temp_sentence, tostring(sentence[i]))
+                    end
+                else
+                    break
+                end
+            end 
+        end
+
+        if temp_sentence[table.maxn(temp_sentence)] == " " then -- DEPREC NOTICE: This code may be redundent.
+            table.remove(temp_sentence, table.maxn(temp_sentence))
+        end -- END DEPREC NOTICE
+
+        if properties.center_x then -- Centers text based on whether the user wanted it.
+            properties.coord_x, _ = center({
+                length = temp_sentence, 
+                start_x = data.startX, 
+                cenBox_width = properties.cenBox_width, 
+                roundType = properties.roundType
+            })
+            properties.coord_x    = properties.coord_x + xAdd + properties.xDisplace
+        end
+        if properties.center_y then -- Same thing as above...
+            _, properties.coord_y = center({
+                start_y = data.startY, 
+                cenBox_height = properties.cenBox_height, 
+                roundType = properties.roundType
+            })
+            properties.coord_y    = properties.coord_y + yAdd + properties.yDisplace
+        else
+            properties.coord_y    = properties.coord_y + yAdd + properties.yDisplace
+        end
+    end
+
+    -- Writing Section
+    posUpdate()
+
+    data.color     = 1
+    data.stringLen = 0
+    data.totalLen  = 0
+    data.yAdd      = 0
+    
+    properties.terminal.setCursorPos(properties.coord_x, properties.coord_y)
+
+    for i = 1, table.maxn(sentence) do -- BETA COMMENT: This could also use a simplification overhaul...
+        local temp_len = nil
+        for _, v in pairs(literals) do
+            for match in string.gmatch(tostring(sentence[i]), v.."*") do
+                temp_len = string.gsub(tostring(sentence[i]), v.."*", "")
+            end
+        end
+
+        if temp_len then
+            data.stringLen = data.stringLen + string.len(tostring(sentence[i])) -- Manages Color
+            data.totalLen  = data.totalLen  + string.len(tostring(temp_len[i])) -- Manages Border Alignment
+        else
+            data.stringLen = data.stringLen + string.len(tostring(sentence[i]))
+            data.totalLen  = data.totalLen  + string.len(tostring(sentence[i]))
+        end
+
+        if type(properties.font_color) == "table" then -- Ensures the right color is displayed on the foreground
+            if properties.font_color[data.color] ~= nil then
+                properties.terminal.setTextColor(properties.font_color[data.color])
+            end
+        end
+        if type(properties.back_color) == "table" then -- Ensures the right background color is displayed on the background
+            if properties.back_color[data.color] ~= nil then
+                properties.terminal.setBackgroundColor(properties.back_color[data.color])
+            end
+        end
+        if sentence[i] == " " then -- Fix for background color overlap.
+            if sentence[i+1] ~= nil then
+                if string.len(sentence[i+1]) + data.totalLen >= properties.cenBox_width then
+                    sentence[i] = ""
+                end
+            else
+                sentence[i] = ""
+            end
+        end
+        if properties.wrapper == "newLine" then -- Adds a new line to write all the text if enabled by user
+            if data.totalLen > properties.cenBox_width then
+                data.yAdd = data.yAdd + 1
+                posUpdate()
+                properties.terminal.setCursorPos(properties.coord_x, properties.coord_y + data.yAdd)
+                data.totalLen = 0 + string.len(tostring(sentence[i])) --Fix for multi-lined comment bug.
+            end
+        elseif properties.wrapper == "concat" then -- Concats the string in order for the text to fit on one line if enabled by the user
+            if data.totalLen > properties.cenBox_width then
+                properties.terminal.setCursorPos(properties.cenBox_width - 3, properties.coord_y)
+                properties.terminal.write("...")
+                break
+            end
+        end
+
+        local newS, newL = performLiteral(sentence[i], properties.terminal) -- Checks to make sure our current iteration on the sentence doesn't have any literal identifiers
+
+        if newS then
+            if newL then
+                if properties.center_x then -- Repositions text correctly if centering is enabled, and a new line is needed.
+                    if string.find(tostring(sentence[i]), "<HC:/n>") then 
+                        sentence[i] = string.gsub(tostring(sentence[i]), "<HC:/n>", "")
+                    end
+                    table.insert(sentence, i, newS)
+                    posUpdate()
+                    table.remove(sentence, i, newS)
+                end
+                properties.coord_y = newL
+                properties.terminal.setCursorPos(properties.coord_x, properties.coord_y)
+                properties.terminal.write(tostring(newS))
+                data.totalLen = 0 + string.len(tostring(sentence[i]))
+                data.yAdd = data.yAdd - 1 -- Fix for double jump bug.
+                sentence[i] = ""
+            else
+                properties.terminal.write(tostring(newS))
+                sentence[i] = ""
+            end
+        else
+            properties.terminal.write(tostring(sentence[i]))
+            sentence[i] = ""
+        end
+
+        if data.stringLen == coloring[data.color] then -- Updates the coloring based on string length.
+            data.color     = data.color + 1
+            data.stringLen = 0
+        end
+    end
+
+    local lastCharPrinted, lastLinePrinted = properties.terminal.getCursorPos()
+    return lastCharPrinted + 1, lastLinePrinted + 1 -- Returning the last position of x & y in case the user wants that information.
+end
+
+--[[END OF DOCUMENT]]

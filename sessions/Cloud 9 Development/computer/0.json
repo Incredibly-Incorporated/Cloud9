@@ -3,8 +3,8 @@
   "label" : "MAIN_CPU",
   "advanced" : true,
   "on" : true,
-  "screen-x" : 159,
-  "screen-y" : 59,
+  "screen-x" : 171,
+  "screen-y" : 56,
   "side-data" : {
     "bottom" : {
       "peripheral" : {

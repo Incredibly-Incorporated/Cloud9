@@ -1,0 +1,270 @@
+--[[
+// API: 'gui'
+// DIR: 'Hydra/apis'
+// PRA: 'N/A'
+--]]
+
+--[[PRA:
+--N/A
+--]]
+
+--[[ DOC BOX:
+// The core of this API is to display everything that
+// needs to be displayed to the defined terminal.
+// This API also brings the OS to life with all sorts of
+// animations functions. 
+// ------------------------------------------------
+// DOCUMENTATION: FUNCTION: 'parseImage':
+// This function will take an image, and parse it into an
+// easier format to read and draw.
+// ------------------------------------------------
+// DOCUMENTATION: FUNCTION: 'animate':
+// This function will take an image, and animate it in
+// a variety of ways.
+// ------------------------------------------------
+--]]
+
+--[[ Function: 'drawLine'
+// REFERENCE: FAQ for using regular arguments.
+// ---------PROPERTIES---------
+// terminal :: TERMINAL :: REQUIRED: "The terminal to draw to."
+// lineType :: STRING   :: REQUIRED: "Option 1: 'horizontal'
+//                                    Option 2: 'vertical'"
+// color    :: COLOR    :: REQUIRED: "The color to write."
+// startX   :: #        :: REQUIRED: "Where to start writing horizontally."
+// startY   :: #        :: REQUIRED: "Where to start writing vertically."
+// length   :: #        :: REQUIRED: "How long to write." 
+//
+--]]
+
+drawLine = function(properties)
+    -- CHECKING CRITICAL VARS:
+    if type(properties) ~= "table" then
+        error("[HC] <ERR> gui:drawLine, arguments must be in a table!", 2)
+    end
+    if not properties.terminal then
+        term.current()
+    end
+    if not properties.lineType then
+        error("[HC] <ERR> gui:drawLine, invalid line type!", 2)
+    end
+    if not properties.color then
+        error("[HC] <ERR> gui:drawLine, color required!", 2)
+    end
+    if not properties.length then
+        error("[HC] <ERR> gui:drawLine, length required!", 2)
+    end
+
+    -- LOCAL VARS:
+    local x, y = properties.terminal.getCursorPos()
+
+    -- CHECKING LOCAL VARS: 
+    if not properties.startX then
+        properties.startX = x
+    end
+    if not properties.startY then
+        properties.startY = y
+    end
+
+    -- CODE:
+    properties.terminal.setCursorPos(properties.startX, properties.startY)
+    properties.terminal.setBackgroundColor(properties.color)
+    if properties.lineType == "horizontal" then
+        for i = 1, properties.length do
+            properties.terminal.write(" ")
+            properties.terminal.setCursorPos(properties.startX + i, properties.startY)
+        end
+    elseif properties.lineType == "vertical" then
+        for i = 1, properties.length do
+            properties.terminal.write(" ")
+            properties.terminal.setCursorPos(properties.startX, properties.startY + i)
+        end
+    end
+end
+
+--[[ Function: 'drawBox'
+// REFERENCE: FAQ for using regular arguments.
+// ---------PROPERTIES---------
+// terminal :: TERMINAL :: REQUIRED: "The terminal to draw to."
+// boxType  :: STRING   :: REQUIRED: "Option 1: 'filled'
+//                                    Option 2: 'open'"
+// color    :: COLOR    :: REQUIRED: "The color to write."
+// startX   :: #        :: REQUIRED: "Where to start writing horizontally."
+// startY   :: #        :: REQUIRED: "Where to start writing vertically."
+// endX     :: #        :: REQUIRED: "Where to end the writing horizontally."
+// endY     :: #        :: REQUIRED: "Where to end the writing vertically."
+//
+--]]
+
+drawBox = function(properties)
+    -- CHECKING CRITICAL VARS:
+    if type(properties) ~= "table" then
+        error("[HC] <ERR> gui:drawBox, arguments must be in a table!", 2)
+    end
+    if not properties.terminal then
+        term.current()
+    end
+    if not properties.boxType then
+        error("[HC] <ERR> gui:drawLine, invalid box type!", 2)
+    end
+    if not properties.color then
+        error("[HC] <ERR> gui:drawBox, color required!", 2)
+    end
+
+    -- LOCAL VARS:
+    local x, y = properties.terminal.getCursorPos()
+    local w, h = properties.terminal.getSize()
+
+    -- CHECKING LOCAL VARS: 
+    if not properties.startX then
+        properties.startX = x
+    end
+    if not properties.startY then
+        properties.startY = y
+    end
+    if not properties.endX then
+        properties.endX = w
+    end
+    if not properties.endY then
+        properties.endY = h
+    end
+
+    -- CODE:
+    properties.terminal.setCursorPos(properties.startX, properties.startY)
+    properties.terminal.setBackgroundColor(properties.color)
+    -- Top of Box:
+    for i = 1, properties.endX do
+        properties.terminal.write(" ")
+        properties.terminal.setCursorPos(properties.startX + i, properties.startY)
+    end
+    -- Repositioning Box:
+    properties.terminal.setCursorPos(properties.startX, properties.startY)
+    -- Middle of Box:
+    for i = 1, properties.endY do
+        if properties.boxType == "open" then
+            properties.terminal.write(" ")
+            properties.terminal.setCursorPos(properties.endX, properties.startY + i)
+            properties.terminal.write(" ")
+            properties.terminal.setCursorPos(properties.startX, properties.startY + i)
+        elseif properties.boxType == "filled" then
+            for j = 0, properties.endX do
+                properties.terminal.write(" ")
+                properties.terminal.setCursorPos(properties.startX + j, properties.startY + i)
+            end
+        end
+    end
+    -- Bottom of Box:
+    for i = 1, properties.endX do
+        properties.terminal.write(" ")
+        properties.terminal.setCursorPos(properties.startX + i, properties.endY)
+    end
+    properties.terminal.setCursorPos(properties.endX, properties.endY)
+end
+
+---------------------------------[DO NOT USE ANYTHING BELOW THIS]-------------------------------------------
+--[[
+// REFERENCE: FAQ for using regular arguments.
+// ---------PROPERTIES---------
+// image :: STRING :: REQUIRED: "The directory of the image."
+//
+--]]
+
+parseImage = function(image)
+    -- LOCAL VARS:
+    local newImage = {}
+
+    -- CHECKING VARS:
+    if not fs.exists(image) then
+        error("[HC] <ERR> 'gui.parseImage:missing_dir', Directory specified not found!", 2)
+    end
+
+    -- CODE:
+    local image = paintutils.loadImage(image)
+
+    for i = 1, table.maxn(image) do
+        for j = 1, table.maxn(image[i]) do
+            table.insert(newImage, image[i][j])
+        end
+    end
+    return newImage
+end
+
+--[[ Function: 'animate'
+// REFERENCE: FAQ for using properties arguments.
+// ---------PROPERTIES---------
+// image     :: STRING :: REQUIRED: "The directory of the image."
+// animation :: STRING :: REQUIRED: "The animation types are below."
+// delay     :: #      :: OPTIONAL: "How fast the animation runs."
+// ---------EXTRA INFO---------
+// animation >> 'pixelize' :: "Choose random pixels to display until
+//                             the full image is loaded."
+//
+--]]
+
+animate = function(properties)
+    -- LOCAL VARS:
+    local x, y      = term.getCursorPos()
+
+    local data      = {
+        image       = nil,
+        storage     = nil
+    }
+
+    local var_types = {
+        image       = "string",
+        animation   = "string",
+        delay       = "number"
+    }
+
+    local var_names = {
+        "image",
+        "animation",
+        "delay"
+    }
+
+    -- CHECKING VARS:
+    if not type(properties) == "table" then
+        error("[HC] <ERR> Arguments are not defined in a table!", 2)
+    end
+
+    if not properties.image then
+        error("[HC] <ERR> 'gui.animate:missing_var', No image was provided!", 2)
+    end
+
+    if not fs.exists(properties.image) then
+        error("[HC] <ERR> 'gui.animate:missing_dir', Directory specified not found!", 2)
+    end
+
+    if not properties.animation then
+        error("[HC] <ERR> 'gui.animate:missing_var', Missing animation type!", 2)
+    end
+
+    if not properties.delay then
+        properties.delay = 0.1
+    end
+
+    if properties.animation ~= "pixelize" then
+        error("[HC] <ERR> 'gui.animate:invalid_type', Invalid string type!", 2)
+    end
+
+    debugger.compare({
+        vars  = properties, 
+        types = var_types, 
+        names = var_names, 
+    })
+
+    -- CODE:
+    data.storage = {}
+    data.image   = parseImage(properties.image)
+
+    if properties.animation == "pixelize" then
+        for i = 1, table.maxn(data.image) do
+            table.insert(data.storage, i, math.random(0, table.maxn(data.image)))
+        end
+        for i = 1, table.maxn(data.storage) do
+            term.setBackgroundColor(data.storage[i])
+            term.write(" ")
+            sleep(properties.delay)
+        end
+    end
+end -- LAST DEV HERE: redo this entire function...look into meta-tabling calls from files? Make a paint program?

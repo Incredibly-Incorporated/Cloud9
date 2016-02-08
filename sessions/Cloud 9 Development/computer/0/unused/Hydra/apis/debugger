@@ -1,0 +1,250 @@
+--[[
+// API: 'debugger'
+// DIR: 'Hydra/apis'
+// PRA: 'N/A'
+--]]
+
+--[[PRA:
+--]]
+
+--[[ DOC BOX:
+// This API helps keep the IDE clean from
+// dirty and repetitive code that would be
+// cluttering the file. These functions are to
+// be used to help check the functionality of the
+// code.
+// ------------------------------------------------
+// DOCUMENTATION: FUNCTION: 'compare':
+// This function is critical to debugging. Since
+// the Hydra OS reads its arguments in a table,
+// it is critical that the information read is
+// what needs to be read. Simply provide variables
+// inside a table, and pair with another table with
+// the types that need to be compared to.
+// 
+// IMPORTANT:
+// Ensure these tables are one-to-one. Meaning,
+// slot 1 in the variable table will be compared
+// to the type listed in slot 1 in the types table.
+// Table dictionaries are not applicable here due to 
+// their keys being pre-defined!
+// ------------------------------------------------
+// DOCUMENTATION: FUNCTION: 'check':
+// The debugger.check function allows you to quickly
+// check a variable to ensure it is outputting the
+// correct information. This function is useful
+// for live in-program debugging.
+// ------------------------------------------------ 
+--]]
+
+--[[ Function: 'compare'
+// REFERENCE: FAQ for using properties arguments.
+// ---------PROPERTIES---------
+// vars      :: VAR/TABLE :: REQUIRED: "The variable[s] to check."
+// types     :: STR/TABLE :: REQUIRED: "The type[s] to compare the
+//                                      variable[s] to."
+// names     :: TABLE     :: REQUSITE: "If your tables are being
+//                                      defined as variable dictionaries
+//                                      then provide their keys."
+// ignoreNil :: BOOLEAN   :: OPTIONAL: "Whether or not to ignore nil
+//                                      variables when comparing types.
+//                                      Useful to enable for dictionaries,
+//                                      default is set to true!"
+//
+--]]
+
+compare = function(properties)
+    -- LOCAL VARS:
+    local w, h = term.getSize()
+
+    -- CHECKING VARS:
+    if not type(properties) == "table" then
+        error("[HC] <ERR> Arguments are not defined in a table!", 2)
+    end
+
+    if type(properties.types) ~= "string" and type(properties.types) ~= "table" then
+        error("[HC] <ERR> 'debugger.compare:types', must be defined as string or table!", 2)
+    end
+
+    if type(properties.vars) == "table" then
+        if type(properties.types) ~= "table" then
+            error("[HC] <ERR> 'debugger.compare', if vars are defined as table, so does types!", 2)
+        end
+    end
+
+    if type(properties.vars) == "table" and type(properties.types) == "table" then
+        if table.maxn(properties.vars) > table.maxn(properties.types) then
+            error("[HC] <ERR> 'debugger.compare:table_mismatch', there are more vars than types to compare!", 2)
+        end
+    end
+
+    if type(properties.names) ~= "table" then
+        error("[HC] <ERR> 'debugger.compare:names', must be defined as a table!", 2)
+    end
+
+    if properties.ignoreNil then
+        if type(properties.ignoreNil) ~= "boolean" then
+            error("[HC] <ERR> 'debugger.compare:ignoreNil', must be defined as a boolean!", 2)
+        end
+    else
+        properties.ignoreNil = true
+    end
+
+    if not properties.names and type(properties.vars[1]) == "nil" then
+        error("[HC] <ERR> 'debugger.compare:detected_dictionary', the system detects that you are using a dictionary. If so, please assign the keys in a table and declare them with 'names'.", 2)
+    end 
+
+    -- CODE
+    if properties.names then 
+        for i = 1, table.maxn(properties.names) do
+            if type(properties.vars[properties.names[i]]) ~= "nil" then
+                if type(properties.vars[properties.names[i]]) ~= properties.types[properties.names[i]] then
+                    error("[HC] <ERR> var: '"..tostring(properties.names[i]).."' does not match type: '"..tostring(properties.types[properties.names[i]]).."'!", 2)
+                end
+            elseif type(properties.vars[properties.names[i]]) == "nil" and not properties.ignoreNil then
+                error("[HC] <ERR> 'debugger.compare:nil_key', var key cannot not be nil for indexing types! Enable properties.ignoreNil for dictionary arrays!", 2)
+            end
+        end
+        return false
+    elseif type(properties.vars) == "table" then 
+        for i = 1, table.maxn(properties.vars) do
+            for j = 1, table.maxn(properties.types) do
+                if type(properties.vars[i]) == properties.types[j] then
+                    error("[HC] <ERR> var: '"..tostring(properties.vars[i]).."' does not match type: '"..tostring(properties.types[j]).."'!", 2)
+                end
+            end
+        end
+        return false
+    else
+        if type(properties.vars) ~= properties.types then
+            error("[HC] <ERR> var: '"..tostring(properties.vars).."' does not match type: '"..tostring(properties.types).."'!", 2)
+        else
+            return false
+        end
+    end
+end
+
+--[[ Function: 'check'
+// REFERENCE: FAQ for using data set properties arguments.
+// ---------PROPERTIES---------
+// var     :: VAR  :: REQUIRED: "The variable to be checked."
+// coord_x :: #    :: OPTIONAL: "The coordinate of the x value."
+// coord_y :: #    :: OPTIONAL: "The coordinate of the y value."
+//
+--]]
+
+check = function(properties)
+    -- LOCAL VARS:
+    local var_types = {
+        coord_x     = "number",
+        coord_y     = "number"
+    }
+
+    local var_names = {
+        "coord_x",
+        "coord_y"
+    }
+
+    -- CHECKING VARS:
+    if not type(properties) == "table" then
+        error("[HC] <ERR> Arguments are not defined in a table!", 2)
+    end
+
+    compare({
+        vars = properties, 
+        types = var_types, 
+        names = var_names
+    })
+
+    -- CODE
+    term.setCursorPos(properties.coord_x, properties.coord_y)
+    term.setBackgroundColor(colors.black)
+    term.setTextColor(colors.white)
+    term.write(properties.var)
+end
+
+--[[ Function: 'log'
+// REFERENCE: FAQ for using data set properties arguments.
+// ---------PROPERTIES---------
+// var  :: VAR :: REQUIRED: "The variable you wish to log."
+// dir  :: STR :: REQUIRED: "The directory string of where to write."
+// mode :: STR :: OPTIONAL: "The mode from the fs API in which to write.
+//                           Default is set to append all data!"
+// from :: STR :: OPTIONAL: "For enhanced logging, leave a stamp of
+//                           where the call came from."
+// 
+--]]
+
+log = function(properties)
+    -- LOCAL VARS:
+    local data      = {
+        mode        = nil,
+        from        = nil
+    }
+
+    local var_types = {
+        dir         = "string",
+        mode        = "string",
+        from        = "string"
+    }
+
+    local var_names = {
+        "dir",
+        "mode",
+        "string"
+    }
+
+    -- CHECKING VARS:
+    if not type(properties) == "table" then
+        error("[HC] <ERR> Arguments are not defined in a table!", 2)
+    end
+
+    compare({
+        vars  = properties, 
+        types = var_types, 
+        names = var_names
+    })
+
+    if fs.exists(properties.dir) == "false" then
+        error("[HC] <ERR> 'debug.log:unknown_dir', directory not found!", 2)
+    end
+
+    -- CODE
+    if not properties.mode then
+        data.mode = "a"
+    else
+        data.mode = properties.mode
+    end
+
+    if not properties.from then
+        data.from = "N/A"
+    else
+        data.from = properties.from
+    end
+
+    local file = fs.open(properties.dir, data.mode)
+    file.writeLine("LOGGED @ "..textutils.formatTime(os.time(), false).." FROM: "..data.from)
+    
+    -- Fix for vauge error.
+    if type(properties.var) == "table" then
+        for _, v in pairs(properties.var) do
+            if type(v) == "function" then
+                file.writeLine("Unable to write data; encountered level 2 error!")
+                file.close()
+                error("[HC] <ERR> debug:log, cannot serialize type function!", 2)
+            end
+        end
+    elseif type(properties.var) == "function" then
+        file.writeLine("Unable to write data; encountered level 2 error!")
+        file.close()
+        error("[HC] <ERR> debug:log, cannot serialize type function!", 2)
+    end
+    -- End Fix
+
+    file.writeLine(textutils.serialize(properties.var))
+
+    file.writeLine("---")
+    file.close()
+end
+
+--[END OF DOCUMENT]

@@ -1,0 +1,32 @@
+wicket.mt      = {__call = function(table, key)
+    local ID = 0
+    if wicket.cache[key] then
+        while wicket.cache[key..ID] do
+            ID = ID + 1
+        end
+        return wicket.cache[key..ID]
+    end
+    wicket.name       = key
+    wicket.cache[key] = wicket.name
+    return wicket.name
+end}
+wicket.cache   = {}
+setmetatable(wicket, wicket.mt)
+
+--[[ Functable: 'new'
+// REFERENCE: FAQ for using functable arguments.
+// ---------PROPERTIES---------
+// name  :: MT    :: REQUIRED: "Name of your new wicket. Additonally,
+//                              this name is your new table with the metadata."
+//
+--]]
+
+function new(name)
+    setmetatable(name, wicket.mt)
+    return name
+end
+
+wicket.mt.__index = function(table, key)
+    return wicket.default[key]
+end
+--[[END OF DOCUMENT]]--

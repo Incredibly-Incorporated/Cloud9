@@ -1,0 +1,57 @@
+LOGGED @ 5:10 PM FROM: lamina:display, checking newWindow properties.
+"Key: reposition | Value: function: 459c7b54"
+---
+LOGGED @ 5:10 PM FROM: lamina:display, checking newWindow properties.
+"Key: redraw | Value: function: 28145940"
+---
+LOGGED @ 5:10 PM FROM: lamina:display, checking newWindow properties.
+"Key: getPosition | Value: function: 68904bd8"
+---
+LOGGED @ 5:10 PM FROM: lamina:display, checking newWindow properties.
+"Key: scroll | Value: function: 2a08e409"
+---
+LOGGED @ 5:10 PM FROM: lamina:display, checking newWindow properties.
+"Key: restoreCursor | Value: function: 868a34c"
+---
+LOGGED @ 5:10 PM FROM: lamina:display, checking newWindow properties.
+"Key: setCursorPos | Value: function: 268a6429"
+---
+LOGGED @ 5:10 PM FROM: lamina:display, checking newWindow properties.
+"Key: write | Value: function: 6e2e9189"
+---
+LOGGED @ 5:10 PM FROM: lamina:display, checking newWindow properties.
+"Key: clear | Value: function: 2f44d1ae"
+---
+LOGGED @ 5:10 PM FROM: lamina:display, checking newWindow properties.
+"Key: setTextColor | Value: function: 1f6489cd"
+---
+LOGGED @ 5:10 PM FROM: lamina:display, checking newWindow properties.
+"Key: isColor | Value: function: 1e5918b8"
+---
+LOGGED @ 5:10 PM FROM: lamina:display, checking newWindow properties.
+"Key: setBackgroundColour | Value: function: 4767c035"
+---
+LOGGED @ 5:10 PM FROM: lamina:display, checking newWindow properties.
+"Key: setTextColour | Value: function: 4dfac6d9"
+---
+LOGGED @ 5:10 PM FROM: lamina:display, checking newWindow properties.
+"Key: isColour | Value: function: 787b3fbc"
+---
+LOGGED @ 5:10 PM FROM: lamina:display, checking newWindow properties.
+"Key: clearLine | Value: function: 7c8da9b9"
+---
+LOGGED @ 5:10 PM FROM: lamina:display, checking newWindow properties.
+"Key: getSize | Value: function: 7d6047d7"
+---
+LOGGED @ 5:10 PM FROM: lamina:display, checking newWindow properties.
+"Key: getCursorPos | Value: function: 5863d95f"
+---
+LOGGED @ 5:10 PM FROM: lamina:display, checking newWindow properties.
+"Key: setVisible | Value: function: 43486faf"
+---
+LOGGED @ 5:10 PM FROM: lamina:display, checking newWindow properties.
+"Key: setBackgroundColor | Value: function: 5fc2bad5"
+---
+LOGGED @ 5:10 PM FROM: lamina:display, checking newWindow properties.
+"Key: setCursorBlink | Value: function: 2d24aea4"
+---

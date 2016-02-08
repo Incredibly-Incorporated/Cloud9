@@ -1,0 +1,19 @@
+--[[
+// PRG: 'HydraPaintPro'
+// DIR: 'Hydra/programs'
+// PRA: '[interface, text, lunette, debugger, gui]'
+--]]
+
+--[[PRA:]]
+os.loadAPI("Hydra/apis/interface")
+
+local apis = {
+    "Hydra/apis/debugger",
+    "Hydra/apis/gui",
+    "Hydra/apis/text",
+    "Hydra/apis/lunette"
+}
+
+interface.compile({apis = apis, display = true, text_col = colors.orange})
+--DOCUMENTATION COMING SOON!
+

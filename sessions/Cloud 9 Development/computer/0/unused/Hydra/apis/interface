@@ -1,0 +1,119 @@
+--[[
+// API: 'interface'
+// DIR: 'Hydra/apis'
+// PRA: 'debugger'
+--]]
+
+--[[PRA:]]
+os.loadAPI("Hydra/apis/debugger")
+
+--[[ DOC BOX:
+// This API is the glue that holds together the primary
+// OS to its artifical programming interface. Hence, the
+// name implies. This API contains a few functions
+// that will allow the user to keep tabs of where the
+// APIs are, and call many APIs with an updated file table.
+// -------------------------------------------------------------
+// DOCUMENTATION: FUNCTION: 'call':
+// This function allows you to call many APIs in a neat fashion.
+// If you have a lot of APIs to load, and want to see them
+// load in a linux like fashion, then use this function!
+// All API[s] go inside a table, which is read, loaded,
+// and printed whether or not your API can be loaded!
+// -------------------------------------------------------------
+--]]
+
+--[[ Function: 'call'
+// REFERENCE: FAQ for using properties arguments.
+// ---------PROPERTIES---------
+// apis     :: TABLE :: REQUIRED: "The APIs needed to load, must be greater
+//                                 than one!"
+// display  :: BOOL  :: REQUIRED: "Whether or not to output success to the
+//                                 current terminal. Errors, will output
+//                                 no matter the value of this property!"
+// text_col :: COLOR :: OPTIONAL: "What color to display to the terminal."
+// coord_x  :: #     :: OPTIONAL: "The coordinate value of x."
+// coord_y  :: #     :: OPTIONAL: "The coordinate value of y."
+// delay    :: #     :: OPTIONAL: "The sleep delay after messages. Default is 0!"
+// terminal :: TERM  :: OPTIONAL: "The terminal in which to display information to."
+//
+--]]
+
+compile = function(properties)
+    -- CRITICAL VARS:
+    if not properties.terminal then
+        properties.terminal = term
+    end
+
+    -- LOCAL VARS:
+    local x, y      = properties.terminal.getCursorPos()
+
+    local data      = {
+        xPos        = x,
+        yPos        = y
+    }
+
+    local var_types = {
+        apis        = "table", 
+        display     = "boolean", 
+        text_col    = "number", 
+        coord_x     = "number", 
+        coord_y     = "number",
+        delay       = "number"
+    }
+
+    local var_names = {
+        "apis",
+        "display",
+        "text_col",
+        "coord_x",
+        "coord_y",
+        "delay"
+    }
+
+    -- CHECKING VARS:
+    if not type(properties) == "table" then
+        error("[HC] <ERR> Arguments are not defined in a table!", 2)
+    end
+
+    if not properties.delay then
+        properties.delay = 0
+    end
+
+    if properties.text_col then
+        properties.terminal.setTextColor(properties.text_col)
+    end
+
+    debugger.compare({
+        vars  = properties, 
+        types = var_types, 
+        names = var_names
+    })
+
+    -- CODE:
+    if properties.coord_x and properties.coord_y then
+        properties.terminal.setCursorPos(properties.coord_x, properties.coord_y)
+        data.xPos = properties.coord_x
+        data.yPos = properties.coord_y
+    elseif properties.coord_x == true and properties.coord_y == false then
+        properties.terminal.setCursorPos(properties.coord_x, data.yPos)
+        data.xPos = properties.coord_x
+    elseif properties.coord_x == false and properties.coord_y == true then
+        properties.terminal.setCursorPos(data.xPos, properties.coord_y)
+        data.yPos = properties.coord_y
+    end
+
+    for i = 1, table.maxn(properties.apis) do
+        if os.loadAPI(properties.apis[i]) == true then
+            if properties.display then
+                print("Hydra > Success, loaded: '"..properties.apis[i].."'")
+                sleep(properties.delay)
+                properties.terminal.setCursorPos(data.xPos, data.yPos + i)
+            end
+        else
+            error("[HC] <ERR> 'interface.compile:failed_load', unable to load '"..properties.apis[i].."' API!", 2)
+        end
+    end
+end
+
+--[END OF DOCUMENT]
