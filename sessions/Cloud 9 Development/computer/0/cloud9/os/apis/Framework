@@ -1,0 +1,38 @@
+--[[
+Framework API Documentation:
+
+The framework API is designed to handle settings
+within programs, apis, etc. which can be used
+to track, store, and manage variables with ease.
+
+Refer to the documentation to use this powerful
+API correctly.
+--]]
+
+--[[
+Function: 'create', Documentation:
+
+This function will be used to create a framework
+file to use in conjunction with the executing script.
+
+> Arguments:
+
+[name]: "Name of the framework file."
+
+<>
+--]]
+
+function create(name)
+	local file = name or "nil"
+
+	if type(name) ~= "string" then
+		error("File must be string!", 2)
+	end
+
+	if not fs.exists(name) then
+		file = fs.open(fs.getDir(shell.dir()).."/"..name, "w")
+		file.close()
+	end
+end
+
+-- End of Document

@@ -1,0 +1,26 @@
+--[[
+Cloud 9 Documentation:
+
+Thank you for choosing the Cloud 9 Environmental 
+ComputerCraft Interface. All APIs & Interfaces are
+documented in their corresponding files. 
+
+Use the OS's exclusive programs to quickly design
+useful programs that look great and function as
+designed in half the time.
+
+Updates will be available on the GitHub, and is
+checked by terminals that have automatic updates
+enabled. 
+--]]
+
+-- Preparing Terminal:
+term.setCursorPos(1, 1)
+term.setTextColor(colors.white)
+term.setBackgroundColor(colors.black)
+term.clear()
+
+os.loadAPI("cloud9/environment/Reference")
+os.loadAPI(Reference.APIS_FRAMEWORK)
+
+-- Checking OS:

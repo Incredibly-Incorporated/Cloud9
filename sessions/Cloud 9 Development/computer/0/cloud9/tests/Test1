@@ -1,0 +1,5 @@
+os.loadAPI("cloud9/environment/Reference")
+os.loadAPI(Reference.APIS_FRAMEWORK)
+
+Framework.create("Test2.fw")
+print("Finished Program!")

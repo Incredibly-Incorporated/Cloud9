@@ -1,0 +1,57 @@
+2016-02-06 15:53:25 [INFO] [CCEmuRedux Launcher] CCEmuRedux Launcher v1.2 started on windows...
+2016-02-06 15:53:25 [INFO] [CCEmuRedux Launcher] Current time is Feb 6, 2016 3:53:25 PM
+2016-02-06 15:53:25 [INFO] [CCEmuRedux Launcher] Using data directory: D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9
+2016-02-06 15:53:25 [INFO] [CCEmuRedux Launcher] System.getProperty('os.name') == 'Windows 10'
+2016-02-06 15:53:25 [INFO] [CCEmuRedux Launcher] System.getProperty('os.version') == '10.0'
+2016-02-06 15:53:25 [INFO] [CCEmuRedux Launcher] System.getProperty('os.arch') == 'amd64'
+2016-02-06 15:53:25 [INFO] [CCEmuRedux Launcher] System.getProperty('java.version') == '1.8.0_60'
+2016-02-06 15:53:25 [INFO] [CCEmuRedux Launcher] System.getProperty('java.vendor') == 'Oracle Corporation'
+2016-02-06 15:53:25 [INFO] [CCEmuRedux Launcher] System.getProperty('sun.arch.data.model') == '64'
+2016-02-06 15:53:29 [INFO] [CCEmuRedux Launcher] Download job 'CCEmuRedux & Libraries' started (16 threads, 11 files)
+2016-02-06 15:53:29 [INFO] [CCEmuRedux Launcher] Attempting to download D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin\jackson-core.jar for job 'CCEmuRedux & Libraries'... (try 0)
+2016-02-06 15:53:29 [INFO] [CCEmuRedux Launcher] Attempting to download D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin\guava.jar for job 'CCEmuRedux & Libraries'... (try 0)
+2016-02-06 15:53:29 [INFO] [CCEmuRedux Launcher] Attempting to download D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin\jackson-databind.jar for job 'CCEmuRedux & Libraries'... (try 0)
+2016-02-06 15:53:29 [INFO] [CCEmuRedux Launcher] Attempting to download D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin\gdx.jar for job 'CCEmuRedux & Libraries'... (try 0)
+2016-02-06 15:53:29 [INFO] [CCEmuRedux Launcher] Attempting to download D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin\jackson-annotations.jar for job 'CCEmuRedux & Libraries'... (try 0)
+2016-02-06 15:53:29 [INFO] [CCEmuRedux Launcher] Making directory D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin
+2016-02-06 15:53:29 [INFO] [CCEmuRedux Launcher] Making directory D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin
+2016-02-06 15:53:29 [INFO] [CCEmuRedux Launcher] Making directory D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin
+2016-02-06 15:53:29 [INFO] [CCEmuRedux Launcher] Attempting to download D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin\gdx-platform.jar for job 'CCEmuRedux & Libraries'... (try 0)
+2016-02-06 15:53:29 [INFO] [CCEmuRedux Launcher] Making directory D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin
+2016-02-06 15:53:29 [INFO] [CCEmuRedux Launcher] Attempting to download D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin\gdx-backend-lwjgl.jar for job 'CCEmuRedux & Libraries'... (try 0)
+2016-02-06 15:53:29 [INFO] [CCEmuRedux Launcher] Making directory D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin
+2016-02-06 15:53:29 [INFO] [CCEmuRedux Launcher] Attempting to download D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin\computercraft.jar for job 'CCEmuRedux & Libraries'... (try 0)
+2016-02-06 15:53:29 [INFO] [CCEmuRedux Launcher] Attempting to download D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin\lwjgl.jar for job 'CCEmuRedux & Libraries'... (try 0)
+2016-02-06 15:53:29 [INFO] [CCEmuRedux Launcher] Attempting to download D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin\ccemuredux.jar for job 'CCEmuRedux & Libraries'... (try 0)
+2016-02-06 15:53:29 [INFO] [CCEmuRedux Launcher] Attempting to download D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin\lwjgl-platform.jar for job 'CCEmuRedux & Libraries'... (try 0)
+2016-02-06 15:53:29 [INFO] [CCEmuRedux Launcher] Finished downloading D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin\computercraft.jar for job 'CCEmuRedux & Libraries': Downloaded successfully and checksum matched
+2016-02-06 15:53:29 [INFO] [CCEmuRedux Launcher] Finished downloading D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin\jackson-annotations.jar for job 'CCEmuRedux & Libraries': Downloaded successfully and etag matched
+2016-02-06 15:53:30 [INFO] [CCEmuRedux Launcher] Finished downloading D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin\jackson-core.jar for job 'CCEmuRedux & Libraries': Downloaded successfully and etag matched
+2016-02-06 15:53:30 [INFO] [CCEmuRedux Launcher] Finished downloading D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin\gdx-backend-lwjgl.jar for job 'CCEmuRedux & Libraries': Downloaded successfully and etag matched
+2016-02-06 15:53:30 [INFO] [CCEmuRedux Launcher] Finished downloading D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin\ccemuredux.jar for job 'CCEmuRedux & Libraries': Downloaded successfully and etag matched
+2016-02-06 15:53:30 [INFO] [CCEmuRedux Launcher] Finished downloading D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin\lwjgl-platform.jar for job 'CCEmuRedux & Libraries': Downloaded successfully and etag matched
+2016-02-06 15:53:30 [INFO] [CCEmuRedux Launcher] Finished downloading D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin\gdx-platform.jar for job 'CCEmuRedux & Libraries': Downloaded successfully and etag matched
+2016-02-06 15:53:31 [INFO] [CCEmuRedux Launcher] Finished downloading D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin\gdx.jar for job 'CCEmuRedux & Libraries': Downloaded successfully and etag matched
+2016-02-06 15:53:31 [INFO] [CCEmuRedux Launcher] Finished downloading D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin\guava.jar for job 'CCEmuRedux & Libraries': Downloaded successfully and etag matched
+2016-02-06 15:53:33 [INFO] [CCEmuRedux Launcher] Finished downloading D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin\jackson-databind.jar for job 'CCEmuRedux & Libraries': Downloaded successfully and etag matched
+2016-02-06 15:53:33 [INFO] [CCEmuRedux Launcher] Finished downloading D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin\lwjgl.jar for job 'CCEmuRedux & Libraries': Downloaded successfully and etag matched
+2016-02-06 15:53:33 [INFO] [CCEmuRedux Launcher] 'CCEmuRedux & Libraries' finished successfully (took 0:00:04.386)
+2016-02-06 15:53:33 [FINE] [CCEmuRedux Launcher] Running C:\Program Files\Java\jre1.8.0_60\bin\javaw.exe -Xmx512M -cp D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin\jackson-core.jar;D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin\jackson-annotations.jar;D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin\jackson-databind.jar;D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin\guava.jar;D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin\computercraft.jar;D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin\gdx.jar;D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin\gdx-backend-lwjgl.jar;D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin\gdx-platform.jar;D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin\lwjgl.jar;D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin\lwjgl-platform.jar;D:\Documents\Projects\Minecraft\1.8.9\ComputerCraft Emu 1.8.9\bin\ccemuredux.jar com.xtansia.ccemu.desktop.DesktopLauncher
+2016-02-06 15:53:34 [INFO] [CCEmuRedux Launcher] Emulator> Native loading is disabled.
+2016-02-06 15:53:37 [INFO] [CCEmuRedux Launcher] Emulator> TickManager: Starting tick thread
+2016-02-06 15:53:37 [INFO] [CCEmuRedux Launcher] Emulator> SetScreen: Changing to screen: MainMenu [MainMenuScreen]
+2016-02-06 15:53:37 [INFO] [CCEmuRedux Launcher] Emulator> SetScreen: Showing new screen [MainMenuScreen]
+2016-02-06 15:53:37 [INFO] [CCEmuRedux Launcher] Emulator> SetScreen: Resizing new screen to (960, 540)
+2016-02-06 15:53:54 [INFO] [CCEmuRedux Launcher] Emulator> MainMenu: Click 'Options'
+2016-02-06 15:53:56 [INFO] [CCEmuRedux Launcher] Emulator> MainMenu: Click 'Local Session'
+2016-02-06 15:53:56 [INFO] [CCEmuRedux Launcher] Emulator> SetScreen: Changing to screen: SelectSession [SelectSessionScreen]
+2016-02-06 15:53:56 [INFO] [CCEmuRedux Launcher] Emulator> SetScreen: Hiding current screen [MainMenuScreen]
+2016-02-06 15:53:56 [INFO] [CCEmuRedux Launcher] Emulator> SetScreen: Showing new screen [SelectSessionScreen]
+2016-02-06 15:53:56 [INFO] [CCEmuRedux Launcher] Emulator> SetScreen: Resizing new screen to (960, 540)
+2016-02-06 15:53:58 [INFO] [CCEmuRedux Launcher] Emulator> SessionSelection: Click 'Create New'
+2016-02-06 15:54:19 [INFO] [CCEmuRedux Launcher] Emulator> SessionSelection: Click 'Load Selected'
+2016-02-06 15:54:19 [INFO] [CCEmuRedux Launcher] Emulator> SetScreen: Changing to screen: Session [SessionScreen]
+2016-02-06 15:54:19 [INFO] [CCEmuRedux Launcher] Emulator> SetScreen: Hiding current screen [SelectSessionScreen]
+2016-02-06 15:54:19 [INFO] [CCEmuRedux Launcher] Emulator> SetScreen: Showing new screen [SessionScreen]
+2016-02-06 15:54:19 [INFO] [CCEmuRedux Launcher] Emulator> SetScreen: Resizing new screen to (960, 540)
+2016-02-06 15:54:23 [INFO] [CCEmuRedux Launcher] Emulator> SessionScreen: New

@@ -1,0 +1,56 @@
+{
+  "id" : "v1.1-dev.17",
+  "minimum-launcher-protocol" : 1,
+  "entry-point" : "com.xtansia.ccemu.desktop.DesktopLauncher",
+  "libraries" : [ {
+    "name" : "jackson-core",
+    "version" : "2.3.0",
+    "custom-url" : null,
+    "checksum" : null
+  }, {
+    "name" : "jackson-annotations",
+    "version" : "2.3.0",
+    "custom-url" : null,
+    "checksum" : null
+  }, {
+    "name" : "jackson-databind",
+    "version" : "2.3.0",
+    "custom-url" : null,
+    "checksum" : null
+  }, {
+    "name" : "guava",
+    "version" : "17.0",
+    "custom-url" : null,
+    "checksum" : null
+  }, {
+    "name" : "computercraft",
+    "version" : "1.78",
+    "custom-url" : "http://addons-origin.cursecdn.com/files/2275/878/ComputerCraft1.78.jar",
+    "checksum" : "0550838bb24c9dae8a8b0c115ebaf8c5"
+  }, {
+    "name" : "gdx",
+    "version" : "0.9.9",
+    "custom-url" : null,
+    "checksum" : null
+  }, {
+    "name" : "gdx-backend-lwjgl",
+    "version" : "0.9.9",
+    "custom-url" : null,
+    "checksum" : null
+  }, {
+    "name" : "gdx-platform",
+    "version" : "0.9.9",
+    "custom-url" : null,
+    "checksum" : null
+  }, {
+    "name" : "lwjgl",
+    "version" : "2.9.1",
+    "custom-url" : null,
+    "checksum" : null
+  }, {
+    "name" : "lwjgl-platform",
+    "version" : "2.9.1",
+    "custom-url" : null,
+    "checksum" : null
+  } ]
+}

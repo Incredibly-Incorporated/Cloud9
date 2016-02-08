@@ -1,0 +1,16 @@
+--[[
+Cloud 9 Reference File:
+
+The environment folder is meant to keep all
+critical aspects of the OS in one place. Such
+as the reference file, which will be used to
+organize all global variables that will be used
+in multiple OS lua files. Refer to this file for
+the variable references.
+--]]
+
+-- OS Directory Files:
+OS_BOOT = "cloud9/os/Boot.c9"
+
+-- API Directory Files:
+APIS_FRAMEWORK = "cloud9/os/apis/Framework"
