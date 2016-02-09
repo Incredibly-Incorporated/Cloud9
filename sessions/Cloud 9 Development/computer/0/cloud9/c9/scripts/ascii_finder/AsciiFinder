@@ -1,0 +1,311 @@
+--[[
+# ASCII Text Finder:
+
+This program is to make it easy to reference 
+the ASCII CC Text that has been specially
+added.
+
+All functions in this script are local since
+developers should have no need to call any of
+these functions in other programs/scripts.
+
+]]
+
+--[[
+# Local Variables:
+
+Locally scoped variables associated with this
+program are declared below.
+
+]]
+
+local w, h = term.getSize()
+local ascii = {}
+local scroll_xPos = w
+local scroll_yPos = 3
+
+--[[
+# Building UI:
+
+The user interface is constructed with the
+following function.
+
+]]
+
+local function draw_user_interface()
+	-- // Draws UI Box
+	paintutils.drawLine(1, 1, w, 1, colors.blue)
+	paintutils.drawFilledBox(1, 2, w, h, colors.black)
+	paintutils.drawLine(1, h, w, h, colors.gray)
+
+	-- // Establishes Text Wrapping
+	term.setTextColor(colors.lightGray)
+	term.setBackgroundColor(colors.black)
+
+	-- // Adding Information & Chevron Prompt
+	term.setTextColor(colors.white)
+	term.setBackgroundColor(colors.blue)
+	term.setCursorPos(1, 1)
+	term.write("ASCII Text Finder:")
+
+	term.setBackgroundColor(colors.red)
+	term.setCursorPos(w - 1, 1)
+	term.write(" "..string.char(215))
+
+	term.setCursorPos(1, h)
+	term.setBackgroundColor(colors.gray)
+	term.write(string.char(187).." Press 'END' to Exit")
+end
+
+local function draw_scroll_bar()
+	-- // Draws Default Scroll Bar
+	term.setBackgroundColor(colors.black)
+	for i = 3, h - 2 do
+		term.setCursorPos(w, i)
+		term.write(string.char(127))
+	end
+	term.setCursorPos(w, 2)
+	term.write(string.char(30))
+	term.setCursorPos(w, h - 1)
+	term.write(string.char(31))
+	term.setCursorPos(w, 3)
+end
+
+
+local function draw_active_scroll()
+	term.setCursorPos(scroll_xPos, scroll_yPos)
+	term.setTextColor(colors.red)
+	term.write(string.char(127))
+end
+
+local function draw_unactive_scroll()
+	draw_scroll_bar()
+	term.setCursorPos(scroll_xPos, scroll_yPos)
+	term.setTextColor(colors.lightGray)
+	term.write(string.char(127))
+end
+
+local function draw_active_up()
+	-- // Draws an Active Up Arrow
+	term.setCursorPos(w, 2)
+	term.setTextColor(colors.red)
+	term.setBackgroundColor(colors.black)
+	term.write(string.char(30))
+end
+
+local function draw_active_down()
+	-- // Draws an Active Down Arrow
+	term.setCursorPos(w, h - 1)
+	term.setTextColor(colors.red)
+	term.setBackgroundColor(colors.black)
+	term.write(string.char(31))
+end
+
+local function draw_unactive_up()
+	-- // Draws an Unactive Up Arrow
+	term.setCursorPos(w, 2)
+	term.setTextColor(colors.white)
+	term.setBackgroundColor(colors.black)
+	term.write(string.char(30))
+end
+
+local function draw_unactive_down()
+	-- // Draws an Unactive Down Arrow
+	term.setCursorPos(w, h - 1)
+	term.setTextColor(colors.white)
+	term.setBackgroundColor(colors.black)
+	term.write(string.char(31))
+end
+
+--[[
+# Ascii Lister:
+
+This function will store all the available
+special Ascii characters into this table and
+spit it out to the terminal for the user to
+view.
+
+]]
+
+local function list_ascii()
+	-- // Add Ascii to Table
+	for i = 1, 31 do
+		table.insert(ascii, "Character #: ["..i.."] = "..string.char(i).."   ")
+	end
+	for i = 127, 255 do
+		table.insert(ascii, "Character #: ["..i.."] = "..string.char(i).."   ")
+	end
+end
+
+-- // Display Ascii to Terminal
+local function display_ascii()
+	local displacement = 0
+	local increment = 0
+	local height = (h - 4)
+	local jump = math.floor(#ascii / height)
+	local scroll = false
+	local goUp = false
+	local goDown = false
+
+	local function display_table()
+		term.setTextColor(colors.white)
+		term.setBackgroundColor(colors.black)
+		for i = 1, h - 2 do
+			term.setCursorPos(1, i + 1)
+			term.write(ascii[i + displacement])
+		end
+	end
+	display_table()
+
+	local function display_goUp()
+		increment = increment + 1
+		if displacement > 0 and goUp == true then
+			draw_active_up()
+			displacement = displacement - 1
+			display_table()
+		end
+		if increment == jump then
+			increment = 0
+			if scroll_yPos > 3 then
+				scroll_yPos = scroll_yPos - 1
+				draw_unactive_scroll()
+			end
+		end
+	end
+
+	local function display_goDown()
+		increment = increment + 1
+		if displacement < #ascii - (h - 2) and goDown == true then
+			draw_active_down()
+			displacement = displacement + 1
+			display_table()
+		end
+		if increment == jump then
+			increment = 0
+			if scroll_yPos < h - 2 then
+				scroll_yPos = scroll_yPos + 1
+				draw_unactive_scroll()
+			end
+		end
+	end
+
+	local function display_moveScroll(to)
+		local from = scroll_yPos
+
+		if to == (h - 2) then
+			displacement = #ascii - (h - 2)
+			display_table()
+		elseif to == 3 then
+			displacement = 0
+			display_table()
+		else
+			if to < from then
+				if displacement - jump > 0 then
+					for i = 1, (from - to) or 1 do
+						displacement = displacement - jump
+						display_table()
+					end
+				end
+			else
+				if displacement + jump < #ascii - (h - 2) then
+					for i = 1, (to - from) or 1 do
+						displacement = displacement + jump
+						display_table()
+					end
+				end
+			end
+		end
+		scroll_yPos = to
+		draw_unactive_scroll()
+	end
+
+	while true do
+		local event, p1, p2, p3 = os.pullEvent()
+
+		draw_unactive_up()
+		draw_unactive_down()
+
+		if event == "mouse_click" and p2 == w and p3 == 2 then
+			goUp = true
+			display_goUp()
+		elseif event == "mouse_click" and p2 == w and p3 == h - 1 then
+			goDown = true
+			display_goDown()
+		elseif event == "mouse_click" and p2 == w and p3 == scroll_yPos then
+			draw_active_scroll()
+			scroll = true
+		elseif event == "mouse_click" and p2 == w and p3 == scroll_yPos then
+			draw_active_scroll()
+			scroll = true
+		elseif event == "mouse_click" and p2 == w and p3 >= 3 and p3 <= h - 3 and scroll == true then
+			display_moveScroll(p3)
+			scroll = false
+		elseif event == "mouse_up" then
+			goUp = false
+			goDown = false
+			
+			if scroll == true then
+				display_moveScroll(p3)
+				scroll = false
+			end
+		elseif event == "mouse_scroll" and p1 == -1 then
+			goUp = true
+			display_goUp()
+			goUp = false
+			draw_unactive_up()
+		elseif event == "mouse_scroll" and p1 == 1 then
+			goDown = true
+			display_goDown()
+			goDown = false
+			draw_unactive_down()
+		elseif event == "key" and p1 == 200 then
+			goUp = true
+			display_goUp()
+		elseif event == "key" and p1 == 208 then
+			goDown = true
+			display_goDown()
+		elseif event == "key_up" then
+			goUp = false
+			goDown = false
+		elseif event == "mouse_click" and p2 >= w - 1 and p2 <= w and p3 == 1 then
+			term.setBackgroundColor(colors.gray)
+			term.setCursorPos(w - 1, 1)
+			term.write(" "..string.char(215))
+			sleep(0.1)
+			term.setBackgroundColor(colors.red)
+			term.setCursorPos(w - 1, 1)
+			term.write(" "..string.char(215))
+			sleep(0.1)
+			term.setBackgroundColor(colors.black)
+			term.setCursorPos(1, 1)
+			term.clear()
+			break
+		elseif event == "key" and p1 == 207 then
+			term.setBackgroundColor(colors.black)
+			term.setCursorPos(1, 1)
+			term.clear()
+			break
+		end
+	end
+end
+
+--[[
+# Main:
+
+This is the main function that will run the program.
+It will call the functions in the order that they
+need to be executed.
+
+]]
+
+local function main()
+	term.clear()
+	draw_user_interface()
+	draw_unactive_scroll()
+	list_ascii()
+	display_ascii()
+end
+
+main()
+
+-- End of Document

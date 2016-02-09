@@ -1,0 +1,8 @@
+{
+  number = 9001,
+  another_table = {
+    another_number = 1447,
+    another_string = "Hello World! ...Again!",
+  },
+  string = "Hello World!",
+}

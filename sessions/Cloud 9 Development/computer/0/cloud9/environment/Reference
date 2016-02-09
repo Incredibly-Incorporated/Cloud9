@@ -10,9 +10,9 @@ the variable references.
 --]]
 
 -- OS Directory Files:
-OS_BOOT = "cloud9/os/Boot.c9"
+OS_BOOT = "cloud9/c9/Boot"
 
 -- API Directory Files:
-APIS_FRAMEWORK = "cloud9/os/apis/Framework"
+APIS_FRAMEWORK = "cloud9/c9/apis/Framework"
 
 -- End of Document

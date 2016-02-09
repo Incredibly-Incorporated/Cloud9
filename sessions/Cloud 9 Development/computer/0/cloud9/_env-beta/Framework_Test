@@ -1,0 +1,23 @@
+os.loadAPI("cloud9/environment/Reference")
+os.loadAPI(Reference.APIS_FRAMEWORK)
+
+local fw_file = Framework.create("FW_TEST_1", shell.dir())
+
+local dummy_table = {
+	["number"] = 9001;
+	["string"] = "Hello World!";
+	["another_table"] = {
+		["another_number"] = 1447;
+		["another_string"] = "Hello World! ...Again!";
+	};
+}
+
+Framework.push(fw_file, dummy_table)
+
+local new_dummy_table = Framework.pull(fw_file)
+
+print(new_dummy_table)
+sleep(3)
+print("Finished Program!")
+
+-- End of Document

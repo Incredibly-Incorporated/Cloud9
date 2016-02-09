@@ -1,10 +1,10 @@
 {
   "storage-limit" : 1048576,
-  "label" : "MAIN_CPU",
+  "label" : "MAIN_TURTLE",
   "advanced" : true,
   "on" : true,
-  "screen-x" : 160,
-  "screen-y" : 85,
+  "screen-x" : 803,
+  "screen-y" : 298,
   "side-data" : {
     "bottom" : {
       "peripheral" : {

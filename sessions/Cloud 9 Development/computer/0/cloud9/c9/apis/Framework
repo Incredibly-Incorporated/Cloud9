@@ -1,0 +1,127 @@
+--[[
+Framework API Documentation:
+
+The framework API is designed to handle settings
+within programs, apis, etc. which can be used
+to track, store, and manage variables with ease.
+
+Refer to the documentation to use this powerful
+API correctly.
+<>
+]]
+
+--[[
+Function: 'create', Documentation:
+
+This function will be used to create a framework
+file to use in conjunction with the executing script.
+
+> Arguments:
+
+[file]     : "Name of the framework file."
+[directory]: "Name of your working directory. If you
+              are unsure, use [shell.dir()]."
+
+> Returns:
+[path]: "The full path name of the framework file
+         based off of the provided arguments."
+<>
+]]
+
+function create(file, directory)
+	-- # Checking Variables:
+	if not file then error("A file name is required!", 2) end
+	if not directory then error("A directory path is required!", 2) end
+	
+	if type(file) ~= "string" or type(directory) ~= "string" then
+		error("Arguments must be type string!", 2)
+	end
+
+	-- # Declaring Local Variables:
+	local path = nil
+
+	if string.find(file, ".fw") then
+		path = directory.."/"..file
+	else
+		path = directory.."/"..file..".fw"
+	end 
+
+	-- # Code:
+	if not fs.exists(path) then
+		new_file = fs.open(path, "w")
+		new_file.writeLine("{}")
+	else
+		return path
+	end
+
+	new_file.close()
+	return path
+end
+
+--[[
+Function: 'pull', Documentation:
+
+This function is used to pull variables from your
+fw file to update your current executing script.
+
+> Arguments:
+
+[fw_file]: "Name of the framework file.
+            This file must already exist!"
+<>
+
+> Returns:
+['Data']: "Returns the data reassembled from 
+           the provided framework file."
+<>
+]]
+
+function pull(fw_file)
+	-- # Checking Variable:
+	if not fw_file then error("A framework file is required!", 2) end
+	if not fs.exists(fw_file) then error("The provided path does not exist!", 2) end
+
+	-- # Declaring Local Variables:
+	local pull_file = fs.open(fw_file, "r")
+	local data = pull_file.readAll()
+
+	-- # Code:
+	pull_file.close()
+	return data
+end
+
+--[[
+Function: 'push', Documentation:
+
+This function is used to push variables from your
+current executing script to the defined fw file.
+
+> Arguments: 
+
+[fw_file]: "Name of the framework file.
+            This file must already exist!"
+[data]   : "The table you wish to push."
+<>
+
+> Returns:
+['Boolean']: "Returns true/false based off of
+              successful code execution."
+<>
+]]
+
+function push(fw_file, data)
+	-- # Checking Variables:
+	if not fw_file then error("A framework file is required!", 2) end
+	if not fs.exists(fw_file) then error("The provided path does not exist!", 2) end
+	if type(data) ~= "table" then error("Data must be provided as type 'table'!", 2) end
+
+	-- # Declaring Local Variables:
+	local push_file = fs.open(fw_file, "w")
+
+	-- # Code:
+	push_file.write(textutils.serialize(data))
+	push_file.close()
+	return true
+end
+
+-- End of Document
