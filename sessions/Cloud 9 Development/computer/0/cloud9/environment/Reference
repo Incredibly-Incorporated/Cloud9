@@ -12,6 +12,10 @@ the variable references.
 -- OS Directory Files:
 OS_BOOT = "cloud9/c9/Boot"
 
+-- OS Settings:
+OS_DEFAULT_BACKGROUNDCOLOR = colors.blue
+OS_DEFAULT_FOREGROUNDCOLOR = colors.orange
+
 -- API Directory Files:
 APIS_FRAMEWORK = "cloud9/c9/apis/Framework"
 
