@@ -19,6 +19,7 @@ OS_DEFAULT_FOREGROUNDCOLOR = colors.orange
 -- OS Library Directory Files:
 LIB_FRAMEWORK = "cloud9/c9/lib/Framework"
 LIB_SCREEN = "cloud9/c9/lib/Screen"
+LIB_TEXT = "cloud9/c9/lib/Text"
 
 -- OS Interface Directory Files:
 INT_SCREEN_FW = "cloud9/c9/interfaces/Screen.fw"

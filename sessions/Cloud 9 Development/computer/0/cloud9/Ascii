@@ -1,0 +1,3 @@
+shell.run("cd", "/")
+shell.run("cd", "cloud9/c9/scripts/ascii_finder")
+shell.run("AsciiFinder")

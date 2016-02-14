@@ -1,0 +1,208 @@
+--[[
+# Text Library Documentation:
+
+The text library is designed to handle all text
+display requests received from libraries, scripts,
+and interfaces. In addition to this, this library
+is also capable of advanced string manipulation
+such as centering vertically & horizontally, as well
+as other various string management capabilities.
+This library utilizes table parameters in some cases. 
+Refer to the documentation of the function in 
+question for more information.
+<>
+]]
+
+--[[
+# Locally Scoped Varaibles:
+
+The following variables are scoped locally for the
+purpose of assisting the library.
+]]
+
+os.loadAPI("cloud9/environment/Reference")
+os.loadAPI(Reference.LIB_FRAMEWORK)
+os.loadAPI(Reference.LIB_SCREEN)
+
+--[[
+# Function: 'center', Documentation:
+
+This function is used to center text based upon
+column, row, or both.
+
+> Parameters:
+
+[param] : {Var Type}    :: REQ/OPT : "Description."
+---------------------------------------------------
+[length]: {STR/TABLE/#} :: REQUIRED: "How long the string is."
+[startX]: {#}           :: OPTIONAL: "Where to center from horizontally."
+[startY]: {#}           :: OPTIONAL: "Where to center from vertically."
+[roundX]: {STR}         :: OPTIONAL: "Pass ['ceil'] as an argument for
+                                      rounding up, and pass ['floor'] 
+                                      as an argument for rounding down."
+[roundY]: {STR}         :: OPTIONAL: "Same as roundX..."
+[width] : {#}           :: OPTIONAL: "How wide is the window we're rounding to."
+[height]: {#}           :: OPTIONAL: "How tall is the window we're rounding to."
+
+> Returns:
+
+[xPos]: "The x-coord of where to place the text."
+[yPos]: "The y-coord of where to place the text."
+
+> Notes:
+
+This function utilizes a parameter table. In order
+to properly use this function look at the example:
+
+local xPos, yPos = Text.center({
+	length = "Hello World!";
+	startX = 0;
+	startY = 0;
+	roundX = "ceil";
+	roundY = "floor";
+	width = 51;
+	height = 19;
+})
+
+The variables don't have to be typed in any particular
+order, nor do you need to have all variables unless 
+otherwise noted by the function documentation.
+
+For startX and startY you must choose one or the other.
+Although both are optional the function requires at 
+least one input to return an output. Otherwise, the 
+terminal size is used as basis.
+<>
+]]
+
+function center(pars)
+	-- # Declaring Local Variables:
+	local w, h = term.getSize()
+	local xPos, yPos = 0
+
+	pars.startX = pars.startX or 0
+	pars.startY = pars.startY or 0
+	pars.roundX = pars.roundX or "ceil"
+	pars.roundY = pars.roundY or "floor"
+	pars.width = pars.width or w
+	pars.height = pars.height or h
+
+	-- # Checking Local Variables:
+	if type(pars) ~= "table" then error("Parameters are not defined as table!", 2) end
+	if type(pars.startX) ~= "number" then error("[startX] must be type: number!", 2) end
+	if type(pars.startY) ~= "number" then error("[startY] must be type: number!", 2) end
+	if type(pars.width) ~= "number" then error("[width] must be type: number!", 2) end
+	if type(pars.height) ~= "number" then error("[height] must be type: number!", 2) end
+	if pars.roundX ~= "ceil" and pars.roundX ~= "floor" then error("[roundX] must be type: 'ceil' or 'floor'!", 2) end
+	if pars.roundY ~= "ceil" and pars.roundY ~= "floor" then error("[roundY] must be type: 'ceil' or 'floor'!", 2) end
+
+	-- # Code:
+	if type(pars.length) == "string" then
+		pars.length = pars["length"]:len()
+	elseif type(pars.length) == "table" then
+		local length = 0
+		for i = 1, #pars.length do
+			length = length + pars["length"][i]:len()
+		end
+		pars.length = length
+	elseif type(pars.length) ~= "number" then
+		error("[length] must be type: string, number, or table!", 2)
+	end
+
+	if pars.roundX == "floor" then
+		xPos = pars.startX + math.floor(pars.width / 2) - math.floor(pars.length / 2)
+	else
+		xPos = pars.startX + math.ceil(pars.width / 2) - math.floor(pars.length / 2)
+	end
+
+	if pars.roundY == "floor" then
+		yPos = pars.startY + math.floor(pars.height / 2)
+	else
+		yPos = pars.startY + math.ceil(pars.height / 2)
+	end
+
+	return xPos, yPos
+end
+
+--[[
+# Function: 'display', Documentation:
+
+This function is used to write text to the screen
+in the most advanced way possible.
+
+> Parameters:
+
+[param]     : {Var Type}    :: REQ/OPT : "Description."
+-------------------------------------------------------
+[text]      : {STR/TABLE}   :: REQUIRED: "What we're writing."
+[foreground]: {COLOR/TABLE} :: OPTIONAL: "The font color of the text."
+[background]: {COLOR/TABLE} :: OPTIONAL: "The background color of the text."
+[startX]    : {#}           :: OPTIONAL: "Where to place the text horizontally."
+[startY]    : {#}           :: OPTIONAL: "Where to place the text vertically."
+[wrapper]   : {STR}         :: OPTIONAL: "Pass ['newLine'] as an argument to add
+                                          a new line when the width is met. Or,
+                                          pass ['concat'] to insert a ... before
+                                          the width border is met."
+[screen]    : {#}           :: OPTIONAL: "Specify a screen_index table if there is
+										  one."
+[centerX]   : {BOOL}        :: OPTIONAL: "Whether or not to center horizontally."
+[centerY]   : {BOOL}        :: OPTIONAL: "Whether or not to center vertically."
+[roundX]    : {STR}         :: OPTIONAL: "Pass ['ceil'] as an argument for
+                                          rounding up, and pass ['floor'] 
+                                          as an argument for rounding down."
+[roundY]    : {STR}         :: OPTIONAL: "Same as roundX..."
+[width]     : {#}           :: OPTIONAL: "The width of your screen."
+[height]    : {#}           :: OPTIONAL: "The height of your screen."
+
+> Returns:
+
+[xPos]: "The x-coord of where the last character was placed."
+[yPos]: "The y-coord of where the last character was placed."
+
+> Notes:
+
+This function utilizes a parameter table. Refer to
+the center function documentation to look at an
+example of how to use this feature.
+<>
+]]
+
+function display(pars)
+	-- # Declaring Local Variables:
+	local w, h = term.getSize()
+	local xPos, yPos = 1
+	local screen_table = Framework.pull(Reference.INT_SCREEN_FW)
+
+	pars.foreground = pars.foreground or Reference.OS_DEFAULT_FOREGROUNDCOLOR
+	pars.background = pars.background or Reference.OS_DEFAULT_BACKGROUNDCOLOR
+	pars.startX = pars.startX or xPos
+	pars.startY = pars.startY or yPos
+	pars.wrapper = pars.wrapper or "concat"
+	pars.screen = pars.screen or #screen_table
+	pars.centerX = pars.centerX or false
+	pars.centerY = pars.centerY or false
+	pars.roundX = pars.roundX or "ceil"
+	pars.roundY = pars.roundY or "floor"
+	pars.width = pars.width or w
+	pars.height = pars.height or h
+
+	-- # Checking Local Variables:
+	if type(pars) ~= "table" then error("Parameters are not defined as table!", 2) end
+	if type(pars.foreground) ~= "number" then error("[foreground] must be type: number!", 2) end
+	if type(pars.background) ~= "number" then error("[background] must be type: number!", 2) end
+	if type(pars.startX) ~= "number" then error("[startX] must be type: number!", 2) end
+	if type(pars.startY) ~= "number" then error("[startY] must be type: number!", 2) end
+	if type(pars.screen) ~= "number" then error("[screen] must be type: number!", 2) end
+	if type(pars.centerX) ~= "boolean" then error("[centerX] must be type: boolean!", 2) end
+	if type(pars.centerY) ~= "boolean" then error("[centerY] must be type: boolean!", 2) end
+	if type(pars.width) ~= "number" then error("[width] must be type: number!", 2) end
+	if type(pars.height) ~= "number" then error("[height] must be type: number!", 2) end
+	if pars.roundX ~= "ceil" and pars.roundX ~= "floor" then error("[roundX] must be type: 'ceil' or 'floor'!", 2) end
+	if pars.roundY ~= "ceil" and pars.roundY ~= "floor" then error("[roundY] must be type: 'ceil' or 'floor'!", 2) end
+	if pars.wrapper ~= "concat" and pars.wrapper ~= "newLine" then error("[wrapper] must be type: 'concat' or 'newLine'!", 2) end
+
+	-- # Code:
+	-- >>> Developer Note: "Coming Soon!"
+end
+
+-- End of Document

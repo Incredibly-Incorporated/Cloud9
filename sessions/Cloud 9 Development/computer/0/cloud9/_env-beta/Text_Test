@@ -1,0 +1,46 @@
+-- # Text Library Testing File:
+-- DO NOT USE IN RELEASE!
+-- v0.0.1
+
+os.loadAPI("cloud9/environment/Reference")
+os.loadAPI(Reference.LIB_TEXT)
+
+term.setCursorPos(1, 1)
+term.setTextColor(colors.orange)
+term.setBackgroundColor(colors.black)
+term.clear()
+
+local w, h = term.getSize()
+local str = "Hello World!"
+
+local xPos, yPos = Text.center({
+	length = str;
+	startX = 0;
+	startY = 0;
+	roundX = "ceil";
+	roundY = "floor";
+	width = 51;
+	height = 19;
+})
+
+for y = 1, h do
+	for x = 1, w, 2 do
+		term.setCursorPos(x, y)
+		term.write(string.char(215)..string.char(173))
+	end
+end
+
+term.setTextColor(colors.blue)
+
+--[[for y = 1, h do
+	term.setCursorPos(1, y)
+	term.write(y..":")
+end
+]]
+
+term.setTextColor(colors.white)
+term.setCursorPos(xPos, yPos)
+term.write(str)
+term.setCursorPos(xPos - 3, yPos + 1)
+term.write("xPos: "..xPos.." | yPos: "..yPos)
+sleep(30)

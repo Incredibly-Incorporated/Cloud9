@@ -164,11 +164,9 @@ function update_terminal()
 							if screen_table[screen][pixel]["yPos"] == screen_table[new_screen][new_pixel]["yPos"] then
 								if screen_table[screen][pixel]["foreground"] ~= screen_table[new_screen][new_pixel]["foreground"] then
 									update_screen()
-								end
-								if screen_table[screen][pixel]["background"] ~= screen_table[new_screen][new_pixel]["background"] then
+								elseif screen_table[screen][pixel]["background"] ~= screen_table[new_screen][new_pixel]["background"] then
 									update_screen()
-								end
-								if screen_table[screen][pixel]["text"] ~= screen_table[new_screen][new_pixel]["text"] then
+								elseif screen_table[screen][pixel]["text"] ~= screen_table[new_screen][new_pixel]["text"] then
 									update_screen()
 								end
 							end
