@@ -7,3 +7,5 @@ The following files/directories were created by CC EmuRedux:
 - ccemuredux-launcher-1.8.9.jar
 - version.json
 - bin (directory)
+
+Link: http://www.computercraft.info/forums2/index.php?/topic/18789-ccemuredux-computercraft-emulator-redux/
