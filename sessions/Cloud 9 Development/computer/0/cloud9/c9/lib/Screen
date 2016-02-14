@@ -1,0 +1,271 @@
+--[[
+# Buffer Library Documentation:
+
+The buffer library is designed to handle all display
+requests from libraries, scripts, and interfaces. The
+solution to handle multiple display environments
+is to provide one display table that will contain
+children screen tables that will also contain
+children tables that hold pixel information which will 
+be created by the current executing script. 
+
+Each screen will hold an index in the screen
+framework file. Each screen index will hold {x} 
+amount of indexes which will depend on the size 
+of the terminal.
+
+Each pixel of the terminal contains its own table.
+The table will contain the following indexes:
+	> ["background"] : The background color.
+	> ["foreground"] : The foreground text color.
+	> ["text"]       : The text to display.
+
+The screen framework file will contain the following layout:
+	> [1] = {
+		[1] = {
+			["background"] = Reference.OS_DEFAULT_BACKGROUNDCOLOR;
+			["foreground"] = Reference.OS_DEFAULT_FOREGROUNDCOLOR;
+			["text"] = " ";
+		};
+		[2] = {
+			["background"] = Reference.OS_DEFAULT_BACKGROUNDCOLOR;
+			["foreground"] = Reference.OS_DEFAULT_FOREGROUNDCOLOR;
+			["text"] = " ";
+		};
+		... etc, etc, etc. until each pixel is documented.
+		Fun Fact: The default terminal is 969 pixels!
+	};
+
+The parent table will be controlled by the
+framework library, which can be accessed globally 
+by the executing terminal. 
+
+Refer to the documentation to use this powerful
+library correctly.
+<>
+]]
+
+--[[
+# Locally Scoped Varaibles:
+
+The following variables are scoped locally for the
+purpose of assisting the library.
+]]
+
+os.loadAPI("cloud9/environment/Reference")
+os.loadAPI(Reference.LIB_FRAMEWORK)
+
+--[[
+# Namespace: 'C9_DISPLAY', Documentation:
+
+This namespace is used as the parent of all
+corresponding children that will be passed to
+the main display. To wrap your head around this
+refer to the documentation above.
+<>
+]]
+
+C9_DISPLAY = {}
+C9_DISPLAY.SCREEN = {}
+C9_DISPLAY.SCREEN.PROTOTYPE = {
+	["index"] = 1;
+	["width"] = 10;
+	["height"] = 10;
+	["startX"] = 5;
+	["startY"] = 5;
+	["text"] = " ";
+	["background"] = Reference.OS_DEFAULT_BACKGROUNDCOLOR;
+	["foreground"] = Reference.OS_DEFAULT_FOREGROUNDCOLOR;
+	["visible"] = true;
+}
+C9_DISPLAY.SCREEN.mt = {
+	["__index"] = C9_DISPLAY.SCREEN.PROTOTYPE;
+}
+
+-- ============= -- LOCAL ZONE -- ============= --
+--[[
+The following functions are local to this library.
+They will not be needed in your screens, they
+are simply here to shorten the size of this file,
+and keep the code clean.
+<>
+]]
+
+-- >>> Developer Note: Update the following functions (except draw_screen) back to local after testing.
+function create_screen_table(object)
+	-- # Code:
+	local screen_table = Framework.pull(Reference.INT_SCREEN_FW)
+	local new_screen = {}
+
+	for y = object.startY, object.height do
+		for x = object.startX, object.width do
+			local pixel_template = {
+				["xPos"] = x;
+				["yPos"] = y;
+				["foreground"] = object.foreground;
+				["background"] = object.background;
+				["text"] = object.text;
+				["visible"] = object.visible;
+			}
+			table.insert(new_screen, pixel_template)
+		end
+	end
+
+	if not screen_table[object.index] then
+		table.insert(screen_table, object.index, new_screen)
+	else
+		table.remove(screen_table, object.index)
+		table.insert(screen_table, object.index, new_screen)
+	end
+
+	Framework.push(Reference.INT_SCREEN_FW, screen_table)
+end
+
+-- >>> Developer Note: Move following function out of local zone before release.
+function draw_screen(screen)
+	-- # Use this function to override priorities.
+	-- # Declaring Local Variables:
+	local w, h = term.getSize()
+	local screen_table = Framework.pull(Reference.INT_SCREEN_FW)
+
+	-- # Code:
+	for pixel = 1, #screen_table[screen] do
+		term.setCursorPos(screen_table[screen][pixel]["xPos"], screen_table[screen][pixel]["yPos"])
+		term.setTextColor(screen_table[screen][pixel]["foreground"])
+		term.setBackgroundColor(screen_table[screen][pixel]["background"])
+		term.write(screen_table[screen][pixel]["text"])
+	end
+end
+
+function update_terminal()
+	-- # Declaring Local Variables:
+	local screen_table = Framework.pull(Reference.INT_SCREEN_FW)
+
+	-- # Code:
+	if #screen_table > 1 then
+		for screen = #screen_table, 1, -1 do
+			local new_screen = screen - 1
+
+			if new_screen == 0 then 
+				break 
+			end
+
+			for new_pixel = 1, #screen_table[new_screen] do				
+				for pixel = 1, #screen_table[screen] do
+					local function update_screen()
+						term.setCursorPos(screen_table[new_screen][new_pixel]["xPos"], screen_table[new_screen][new_pixel]["yPos"])
+						term.setTextColor(screen_table[new_screen][new_pixel]["foreground"])
+						term.setBackgroundColor(screen_table[new_screen][new_pixel]["background"])
+						term.write(screen_table[new_screen][new_pixel]["text"])
+					end
+
+					if screen_table[new_screen][pixel]["visible"] == true then
+						if screen_table[screen][pixel]["xPos"] == screen_table[new_screen][new_pixel]["xPos"] then
+							if screen_table[screen][pixel]["yPos"] == screen_table[new_screen][new_pixel]["yPos"] then
+								if screen_table[screen][pixel]["foreground"] ~= screen_table[new_screen][new_pixel]["foreground"] then
+									update_screen()
+								end
+								if screen_table[screen][pixel]["background"] ~= screen_table[new_screen][new_pixel]["background"] then
+									update_screen()
+								end
+								if screen_table[screen][pixel]["text"] ~= screen_table[new_screen][new_pixel]["text"] then
+									update_screen()
+								end
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+end
+
+-- =========== -- END LOCAL ZONE -- =========== --
+
+--[[
+# Function Table Documentation:
+
+This table is used to manage the screen via this
+library. The functions will be documented within the
+table.
+<>
+]]
+
+local _functions = {
+	
+	--[[
+	// # Function: 'display', Documentation:
+	//
+	// This function is used to display the screen to the
+	// main display. It will check what pixels need updated.
+	//
+	// > Parameters:
+	//
+	// [object] : "The screen object."
+	// [visible]: "Whether or not to update the display."
+	//
+	// > Returns:
+	// [N/A]: "No returns are available for this function."
+	// <>
+	]]
+
+	display = function(object, visible)
+		-- # Checking Variables:
+		if type(visible) ~= "boolean" then error("Visibility must be true or false!", 2) end
+
+		-- # Declaring Local Variables:
+		-- N/A
+
+		-- # Code:
+		if object["visible"] ~= visible then
+			object["visible"] = visible
+			create_screen_table(object)
+		end
+	end;
+}
+
+--[[
+# Function: 'new', Documentation:
+
+This function is used to provide an object in
+which the user can manage a screen in the 
+display buffer. 
+
+> Parameters:
+
+[object]: "The table object you want to have
+           in OOP format."
+
+> Returns:
+[object]: "The provided table will be returned
+           in OOP format."
+<>
+]]
+
+function new(object)
+	if object and type(object) ~= "table" then
+		error("The provided argument must be a table!", 2)
+	end
+
+	if object then
+		setmetatable(object, C9_DISPLAY.SCREEN.mt)
+
+		for k, v in pairs(_functions) do
+			object[k] = v
+		end
+
+		return object
+	else
+		local new_screen = {}
+
+		setmetatable(new_screen, C9_DISPLAY.SCREEN.mt)
+
+		for k, v in pairs(_functions) do
+			new_terminal[k] = v
+		end
+
+		return new_terminal
+	end
+end
+
+-- End of Document

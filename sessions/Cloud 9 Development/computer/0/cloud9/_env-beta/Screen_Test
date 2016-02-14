@@ -1,0 +1,68 @@
+-- # Screen Library Testing File:
+-- DO NOT USE IN RELEASE!
+-- v0.0.1 = "Success, the create screen function
+-- returns a table with 969 seperate pixel tables."
+-- v0.0.3 = "Success, the display screen functions
+-- as intended. Comparison of buffer tables can now
+-- be tested in the next library version..."
+-- v0.0.4 = "Success, the update_terminal function
+-- can now see changes between the screens based
+-- on their index in the parent table and make the
+-- changes appropriate to the mismatch. Furthermore,
+-- it is capable of determining whether or not to skip
+-- a screen based upon its visibility settings."
+-- ---
+-- Lastest Development:
+-- Start working on the OOP part of this library.
+-- Mainly towards setting up what functions are available
+-- to users once a new screen object has been returned to
+-- them. 
+
+os.loadAPI("cloud9/environment/Reference")
+os.loadAPI(Reference.LIB_SCREEN)
+os.loadAPI(Reference.LIB_FRAMEWORK)
+
+local w, h = term.getSize()
+
+local main_object = {
+	["index"] = 1;
+	["width"] = w;
+	["height"] = h;
+	["startX"] = 1;
+	["startY"] = 1;
+	["text"] = "*";
+	["foreground"] = Reference.OS_DEFAULT_FOREGROUNDCOLOR;
+	["background"] = Reference.OS_DEFAULT_BACKGROUNDCOLOR;
+	["visible"] = true;
+}
+
+local new_object = {
+	["index"] = 2;
+	["width"] = 10;
+	["height"] = 10;
+	["startX"] = 5;
+	["startY"] = 5;
+	["text"] = "/";
+	["foreground"] = Reference.OS_DEFAULT_BACKGROUNDCOLOR;
+	["background"] = Reference.OS_DEFAULT_FOREGROUNDCOLOR;
+	["visible"] = true;
+}
+
+Screen.create_screen_table(main_object)
+Screen.create_screen_table(new_object)
+
+term.setCursorPos(1, 1)
+term.clear()
+
+Screen.draw_screen(main_object["index"])
+Screen.draw_screen(new_object["index"])
+
+sleep(3)
+
+new_object.visible = false
+Screen.create_screen_table(new_object)
+Screen.update_terminal()
+
+sleep(5)
+
+-- End of Document

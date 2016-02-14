@@ -1,5 +1,5 @@
 --[[
-Framework API Documentation:
+# Framework API Documentation:
 
 The framework API is designed to handle settings
 within programs, apis, etc. which can be used
@@ -11,12 +11,12 @@ API correctly.
 ]]
 
 --[[
-Function: 'create', Documentation:
+# Function: 'create', Documentation:
 
 This function will be used to create a framework
 file to use in conjunction with the executing script.
 
-> Arguments:
+> Parameters:
 
 [file]     : "Name of the framework file."
 [directory]: "Name of your working directory. If you
@@ -59,12 +59,12 @@ function create(file, directory)
 end
 
 --[[
-Function: 'pull', Documentation:
+# Function: 'pull', Documentation:
 
 This function is used to pull variables from your
 fw file to update your current executing script.
 
-> Arguments:
+> Parameters:
 
 [fw_file]: "Name of the framework file.
             This file must already exist!"
@@ -87,16 +87,16 @@ function pull(fw_file)
 
 	-- # Code:
 	pull_file.close()
-	return data
+	return textutils.unserialize(data)
 end
 
 --[[
-Function: 'push', Documentation:
+# Function: 'push', Documentation:
 
 This function is used to push variables from your
 current executing script to the defined fw file.
 
-> Arguments: 
+> Parameters: 
 
 [fw_file]: "Name of the framework file.
             This file must already exist!"

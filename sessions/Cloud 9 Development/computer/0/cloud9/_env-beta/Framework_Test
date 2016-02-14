@@ -1,5 +1,5 @@
 os.loadAPI("cloud9/environment/Reference")
-os.loadAPI(Reference.APIS_FRAMEWORK)
+os.loadAPI(Reference.LIB_FRAMEWORK)
 
 local fw_file = Framework.create("FW_TEST_1", shell.dir())
 
