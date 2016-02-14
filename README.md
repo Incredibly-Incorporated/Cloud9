@@ -5,7 +5,7 @@ https://github.com/Incredibly-Incorporated/Cloud9/tree/master/sessions/Cloud%209
 
 # Credits:
 CC EmuRedux currently maintained by Xtansia as of February 8, 2016.
-The following files/directories were created by CC EmuRedux:
+The following files/directories are maintained by CC EmuRedux:
 - ccemuredux-launcher-1.8.9.jar
 - version.json
 - bin (directory)
