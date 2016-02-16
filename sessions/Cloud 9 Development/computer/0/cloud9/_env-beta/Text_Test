@@ -4,6 +4,7 @@
 
 os.loadAPI("cloud9/environment/Reference")
 os.loadAPI(Reference.LIB_TEXT)
+os.loadAPI(Reference.LIB_FRAMEWORK)
 
 term.setCursorPos(1, 1)
 term.setTextColor(colors.orange)
@@ -11,7 +12,8 @@ term.setBackgroundColor(colors.black)
 term.clear()
 
 local w, h = term.getSize()
-local str = "Hello World!"
+
+--[[local str = "Hello World!"
 
 local xPos, yPos = Text.center({
 	length = str;
@@ -32,11 +34,10 @@ end
 
 term.setTextColor(colors.blue)
 
---[[for y = 1, h do
+for y = 1, h do
 	term.setCursorPos(1, y)
 	term.write(y..":")
 end
-]]
 
 term.setTextColor(colors.white)
 term.setCursorPos(xPos, yPos)
@@ -44,3 +45,57 @@ term.write(str)
 term.setCursorPos(xPos - 3, yPos + 1)
 term.write("xPos: "..xPos.." | yPos: "..yPos)
 sleep(30)
+
+-- v0.0.1 = Success, center function works as intended!
+]]
+
+-- v0.0.2
+local words = {
+	[1] = "Hello ";
+	[2] = "World";
+	[3] = "! ";
+	[4] = "Here comes a real shocker.";
+	[5] = " I am now going to test how ";
+	[6] = "well this program works!";
+	[7] = " Can we go any longer? I think we can go ";
+	[8] = "as long as we want without consequence.";
+}
+
+local words_foreground = {
+	[1] = colors.orange;
+	[2] = colors.blue;
+	[3] = colors.red;
+	[4] = colors.cyan;
+	[5] = colors.purple;
+	[6] = colors.white;
+	[7] = colors.black;
+	[8] = colors.pink;
+}
+
+local words_background = {
+	[1] = colors.black;
+	[2] = colors.white;
+	[3] = colors.black;
+	[4] = colors.orange;
+	[5] = colors.brown;
+	[6] = colors.black;
+	[7] = colors.white;
+	[8] = colors.cyan;
+}
+
+local new_sentence = Text.display {
+	text = words;
+	foreground = words_foreground;
+	background = words_background;
+	wrapper = "new line";
+	centerX = true;
+	centerY = true;
+	roundX = "ceil";
+	roundY = "floor";
+}
+
+Framework.push(Reference.OS_LOG, new_sentence)
+sleep(5)
+--print("Finished!")
+
+-- End of Document

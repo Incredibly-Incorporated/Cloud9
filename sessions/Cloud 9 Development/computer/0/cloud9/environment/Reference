@@ -11,6 +11,7 @@ the variable references.
 
 -- OS Directory Files:
 OS_BOOT = "cloud9/c9/Boot"
+OS_LOG = "cloud9/logs/log.fw"
 
 -- OS Default Settings:
 OS_DEFAULT_BACKGROUNDCOLOR = colors.blue

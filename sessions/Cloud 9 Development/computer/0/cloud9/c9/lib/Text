@@ -34,7 +34,7 @@ column, row, or both.
 
 [param] : {Var Type}    :: REQ/OPT : "Description."
 ---------------------------------------------------
-[length]: {STR/TABLE/#} :: REQUIRED: "How long the string is."
+[length]: {STR/TABLE/#} :: OPTIONAL: "How long the string is."
 [startX]: {#}           :: OPTIONAL: "Where to center from horizontally."
 [startY]: {#}           :: OPTIONAL: "Where to center from vertically."
 [roundX]: {STR}         :: OPTIONAL: "Pass ['ceil'] as an argument for
@@ -78,7 +78,7 @@ terminal size is used as basis.
 function center(pars)
 	-- # Declaring Local Variables:
 	local w, h = term.getSize()
-	local xPos, yPos = 0
+	local xPos, yPos = 0, 0
 
 	pars.startX = pars.startX or 0
 	pars.startY = pars.startY or 0
@@ -106,7 +106,7 @@ function center(pars)
 		end
 		pars.length = length
 	elseif type(pars.length) ~= "number" then
-		error("[length] must be type: string, number, or table!", 2)
+		pars.length = 0
 	end
 
 	if pars.roundX == "floor" then
@@ -139,7 +139,7 @@ in the most advanced way possible.
 [background]: {COLOR/TABLE} :: OPTIONAL: "The background color of the text."
 [startX]    : {#}           :: OPTIONAL: "Where to place the text horizontally."
 [startY]    : {#}           :: OPTIONAL: "Where to place the text vertically."
-[wrapper]   : {STR}         :: OPTIONAL: "Pass ['newLine'] as an argument to add
+[wrapper]   : {STR}         :: OPTIONAL: "Pass ['new line'] as an argument to add
                                           a new line when the width is met. Or,
                                           pass ['concat'] to insert a ... before
                                           the width border is met."
@@ -161,16 +161,43 @@ in the most advanced way possible.
 
 > Notes:
 
-This function utilizes a parameter table. Refer to
+1: This function utilizes a parameter table. Refer to
 the center function documentation to look at an
 example of how to use this feature.
+
+2: If your string table comes with a color table,
+ensure they number of indexes matches, or else you
+may encounter unexpected results. Example:
+
+local string = {
+	[1] = "Hello ";
+	[2] = "World";
+	[3] = "!";
+}
+
+local string_foreground = {
+	[1] = colors.orange;
+	[2] = colors.blue;
+	[3] = colors.red;
+}
+
+local string_background = {
+	[1] = colors.blue;
+	[2] = colors.orange;
+	[3] = colors.green;
+}
+
+If your indexes don't match, the function will
+apply the last color used to the rest of the
+string. I'll let you decide the use for this.
 <>
 ]]
 
 function display(pars)
 	-- # Declaring Local Variables:
 	local w, h = term.getSize()
-	local xPos, yPos = 1
+	local xPos, yPos = 0, 0
+	local paragraph = {}
 	local screen_table = Framework.pull(Reference.INT_SCREEN_FW)
 
 	pars.foreground = pars.foreground or Reference.OS_DEFAULT_FOREGROUNDCOLOR
@@ -188,8 +215,8 @@ function display(pars)
 
 	-- # Checking Local Variables:
 	if type(pars) ~= "table" then error("Parameters are not defined as table!", 2) end
-	if type(pars.foreground) ~= "number" then error("[foreground] must be type: number!", 2) end
-	if type(pars.background) ~= "number" then error("[background] must be type: number!", 2) end
+	if type(pars.foreground) ~= "number" and type(pars.foreground) ~= "table" then error("[foreground] must be type: number or table!", 2) end
+	if type(pars.background) ~= "number" and type(pars.background) ~= "table" then error("[background] must be type: number or table!", 2) end
 	if type(pars.startX) ~= "number" then error("[startX] must be type: number!", 2) end
 	if type(pars.startY) ~= "number" then error("[startY] must be type: number!", 2) end
 	if type(pars.screen) ~= "number" then error("[screen] must be type: number!", 2) end
@@ -199,10 +226,164 @@ function display(pars)
 	if type(pars.height) ~= "number" then error("[height] must be type: number!", 2) end
 	if pars.roundX ~= "ceil" and pars.roundX ~= "floor" then error("[roundX] must be type: 'ceil' or 'floor'!", 2) end
 	if pars.roundY ~= "ceil" and pars.roundY ~= "floor" then error("[roundY] must be type: 'ceil' or 'floor'!", 2) end
-	if pars.wrapper ~= "concat" and pars.wrapper ~= "newLine" then error("[wrapper] must be type: 'concat' or 'newLine'!", 2) end
+	if pars.wrapper ~= "concat" and pars.wrapper ~= "new line" then error("[wrapper] must be type: 'concat' or 'new line'!", 2) end
 
 	-- # Code:
-	-- >>> Developer Note: "Coming Soon!"
+	-- >> Transmitting String into Table if Applicable:
+	if type(pars.text) == "string" then
+		pars.text = {pars.text}
+	elseif type(pars.text) ~= "table" then
+		error("[text] must be type: string or table!", 2)
+	end
+
+	-- >> Applying Unknown Variable Patches:
+	if xPos == 0 and not pars.centerX then
+		xPos = 1
+	end
+	if yPos == 0 and not pars.centerY then
+		yPos = 1
+	else
+		_, yPos = center({
+			startY = yPos;
+			roundY = pars.roundY;
+			height = pars.height;
+		})
+	end
+
+	-- >> Building Paragraph Table & Adding Color:
+	for i = 1, #pars.text do
+		local words = tostring(pars.text[i])
+		local start, stop = 0, 0
+
+		if type(pars.foreground) == "table" then
+			if not pars.foreground[i] then 
+				foreground = pars.foreground[#pars.foreground]
+			else
+				foreground = pars.foreground[i]
+			end
+		else
+			foreground = pars.foreground
+		end
+		if type(pars.background) == "table" then
+			if not pars.background[i] then
+				background = pars.background[#pars.background]
+			else
+				background = pars.background[i]
+			end
+		else
+			background = pars.background
+		end  
+
+		while true do
+			start = start + 1
+			if string.find(words, " ", start) == nil then
+				local new_word = string.sub(words, start, words:len())
+				if new_word ~= "" then
+					table.insert(paragraph, {
+						["text"] = new_word;
+						["foreground"] = foreground;
+						["background"] = background;
+						["display"] = true;
+					})
+					break
+				end
+				break
+			else
+				_, stop = string.find(words, " ", start)
+				local new_word = string.sub(words, start, stop)
+				table.insert(paragraph, {
+					["text"] = new_word;
+					["foreground"] = foreground;
+					["background"] = background;
+					["display"] = true;
+				})
+				start = stop
+			end
+		end
+	end
+
+	-- >> Adding Positions to Paragraph Table:
+	local sentence = {}
+	local sentence_length, last_index = 0, 0
+
+	for i = 1, #paragraph do
+		if sentence_length + paragraph[i]["text"]:len() < pars.width then
+			sentence_length = sentence_length + paragraph[i]["text"]:len()
+			table.insert(sentence, paragraph[i]["text"])
+		end
+
+		if sentence_length + paragraph[i]["text"]:len() >= pars.width or i == #paragraph then
+			-- // Replaces the text with '...' for proper centering if applicable.
+			if pars.wrapper == "concat" then
+				sentence[#sentence] = "..."
+				paragraph[i - 1]["text"] = "..."
+			end
+
+			if pars.centerX then
+				xPos = center({
+					length = sentence;
+					startX = pars.startX or 0;
+					roundX = pars.roundX;
+					width = pars.width;
+				})
+			end
+
+			for k = 1, #sentence do
+				-- // Appears to be a rounding error here, +1 temporary fix!
+				paragraph[k + last_index]["xPos"] = xPos + 1
+				-- // If we are multi-lining, then we need to keep centered.
+				if pars.centerY then
+					paragraph[k + last_index]["yPos"] = yPos - 1
+				else
+					paragraph[k + last_index]["yPos"] = yPos
+				end
+				
+				xPos = xPos + sentence[k]:len()
+				
+				-- // Removes extra padded background bordering for those who care.
+				if k == #sentence then
+					paragraph[k + last_index]["text"] = string.gsub(paragraph[k + last_index]["text"], " ", "")
+				end
+
+				-- // Declares the end of the paragraph if you applied this wrapper.
+				if pars.wrapper == "concat" and k == #sentence then
+					paragraph[k + last_index]["display"] = false
+				end 
+			end 
+
+			last_index = last_index + #sentence
+			sentence = {}
+			sentence_length = 0
+			yPos = yPos + 1
+		end
+	end
+
+	-- >> Write Sentence to Screen:
+	for i = 1, #paragraph do
+		if paragraph[i]["display"] then
+			term.setCursorPos(paragraph[i]["xPos"], paragraph[i]["yPos"])
+			term.setTextColor(paragraph[i]["foreground"])
+			term.setBackgroundColor(paragraph[i]["background"])
+			term.write(paragraph[i]["text"])
+		else
+			break
+		end
+	end
+
+	-- >>> Developer Note: The following return is temporary for testing!
+	return paragraph
 end
+
+--[[
+# To-Do List:
+- Possibly add Literal strings that are not
+available through the term API. Most importantly
+the new line literal "\n", which is just replaced
+by a " " when printed. 
+
+- Implement the display function with the screen
+library in order to provide infrastructure to the
+operating system.
+]]
 
 -- End of Document
