@@ -1,306 +1,56 @@
-{
-  {
-    display = true,
-    foreground = 2,
-    background = 32768,
-    text = "Hello ",
-    xPos = 3,
-    yPos = 8,
-  },
-  {
-    display = true,
-    foreground = 2048,
-    background = 1,
-    text = "World",
-    xPos = 9,
-    yPos = 8,
-  },
-  {
-    display = true,
-    foreground = 16384,
-    background = 32768,
-    text = "! ",
-    xPos = 14,
-    yPos = 8,
-  },
-  {
-    display = true,
-    foreground = 512,
-    background = 2,
-    text = "Here ",
-    xPos = 16,
-    yPos = 8,
-  },
-  {
-    display = true,
-    foreground = 512,
-    background = 2,
-    text = "comes ",
-    xPos = 21,
-    yPos = 8,
-  },
-  {
-    display = true,
-    foreground = 512,
-    background = 2,
-    text = "a ",
-    xPos = 27,
-    yPos = 8,
-  },
-  {
-    display = true,
-    foreground = 512,
-    background = 2,
-    text = "real ",
-    xPos = 29,
-    yPos = 8,
-  },
-  {
-    display = true,
-    foreground = 512,
-    background = 2,
-    text = "shocker.",
-    xPos = 34,
-    yPos = 8,
-  },
-  {
-    display = true,
-    foreground = 1024,
-    background = 4096,
-    text = " ",
-    xPos = 42,
-    yPos = 8,
-  },
-  {
-    display = true,
-    foreground = 1024,
-    background = 4096,
-    text = "I ",
-    xPos = 43,
-    yPos = 8,
-  },
-  {
-    display = true,
-    foreground = 1024,
-    background = 4096,
-    text = "am ",
-    xPos = 45,
-    yPos = 8,
-  },
-  {
-    display = true,
-    foreground = 1024,
-    background = 4096,
-    text = "now",
-    xPos = 48,
-    yPos = 8,
-  },
-  {
-    display = true,
-    foreground = 1024,
-    background = 4096,
-    text = "going ",
-    xPos = 4,
-    yPos = 9,
-  },
-  {
-    display = true,
-    foreground = 1024,
-    background = 4096,
-    text = "to ",
-    xPos = 10,
-    yPos = 9,
-  },
-  {
-    display = true,
-    foreground = 1024,
-    background = 4096,
-    text = "test ",
-    xPos = 13,
-    yPos = 9,
-  },
-  {
-    display = true,
-    foreground = 1024,
-    background = 4096,
-    text = "how ",
-    xPos = 18,
-    yPos = 9,
-  },
-  {
-    display = true,
-    foreground = 1,
-    background = 32768,
-    text = "well ",
-    xPos = 22,
-    yPos = 9,
-  },
-  {
-    display = true,
-    foreground = 1,
-    background = 32768,
-    text = "this ",
-    xPos = 27,
-    yPos = 9,
-  },
-  {
-    display = true,
-    foreground = 1,
-    background = 32768,
-    text = "program ",
-    xPos = 32,
-    yPos = 9,
-  },
-  {
-    display = true,
-    foreground = 1,
-    background = 32768,
-    text = "works!",
-    xPos = 40,
-    yPos = 9,
-  },
-  {
-    display = true,
-    foreground = 32768,
-    background = 1,
-    text = " ",
-    xPos = 46,
-    yPos = 9,
-  },
-  {
-    display = true,
-    foreground = 32768,
-    background = 1,
-    text = "Can",
-    xPos = 47,
-    yPos = 9,
-  },
-  {
-    display = true,
-    foreground = 32768,
-    background = 1,
-    text = "we ",
-    xPos = 2,
-    yPos = 10,
-  },
-  {
-    display = true,
-    foreground = 32768,
-    background = 1,
-    text = "go ",
-    xPos = 5,
-    yPos = 10,
-  },
-  {
-    display = true,
-    foreground = 32768,
-    background = 1,
-    text = "any ",
-    xPos = 8,
-    yPos = 10,
-  },
-  {
-    display = true,
-    foreground = 32768,
-    background = 1,
-    text = "longer? ",
-    xPos = 12,
-    yPos = 10,
-  },
-  {
-    display = true,
-    foreground = 32768,
-    background = 1,
-    text = "I ",
-    xPos = 20,
-    yPos = 10,
-  },
-  {
-    display = true,
-    foreground = 32768,
-    background = 1,
-    text = "think ",
-    xPos = 22,
-    yPos = 10,
-  },
-  {
-    display = true,
-    foreground = 32768,
-    background = 1,
-    text = "we ",
-    xPos = 28,
-    yPos = 10,
-  },
-  {
-    display = true,
-    foreground = 32768,
-    background = 1,
-    text = "can ",
-    xPos = 31,
-    yPos = 10,
-  },
-  {
-    display = true,
-    foreground = 32768,
-    background = 1,
-    text = "go ",
-    xPos = 35,
-    yPos = 10,
-  },
-  {
-    display = true,
-    foreground = 64,
-    background = 512,
-    text = "as ",
-    xPos = 38,
-    yPos = 10,
-  },
-  {
-    display = true,
-    foreground = 64,
-    background = 512,
-    text = "long ",
-    xPos = 41,
-    yPos = 10,
-  },
-  {
-    display = true,
-    foreground = 64,
-    background = 512,
-    text = "as ",
-    xPos = 46,
-    yPos = 10,
-  },
-  {
-    display = true,
-    foreground = 64,
-    background = 512,
-    text = "we",
-    xPos = 49,
-    yPos = 10,
-  },
-  {
-    display = true,
-    foreground = 64,
-    background = 512,
-    text = "want ",
-    xPos = 15,
-    yPos = 11,
-  },
-  {
-    display = true,
-    foreground = 64,
-    background = 512,
-    text = "without ",
-    xPos = 20,
-    yPos = 11,
-  },
-  {
-    display = true,
-    foreground = 64,
-    background = 512,
-    text = "consequence.",
-    xPos = 28,
-    yPos = 11,
-  },
-}
+LOGGED @ 8:09 PM:
+>>> table: 6268d235:
+---
+LOGGED @ 11:23 PM:
+>>> table: 2bbaddf5:
+> Table: table: 2bbaddf5, did not contain any keys.
+---
+LOGGED @ 0:29 AM:
+>>> table: 431b3136:
+> Table: table: 431b3136, did not contain any keys.
+---
+LOGGED @ 3:52 AM:
+>>> C9_DISPLAY.TERMINALS from 'update_terminal' function:
+> Table: C9_DISPLAY.TERMINALS from 'update_terminal' function, did not contain any keys.
+---
+LOGGED @ 6:29 AM:
+>>> C9_DISPLAY.TERMINALS from 'update_terminal' function:
+> Table: C9_DISPLAY.TERMINALS from 'update_terminal' function, did not contain any keys.
+---
+LOGGED @ 7:57 AM:
+>>> C9_DISPLAY.TERMINALS from 'update_terminal' function:
+> Table: C9_DISPLAY.TERMINALS from 'update_terminal' function, did not contain any keys.
+---
+LOGGED @ 11:19 AM:
+>>> C9_DISPLAY.TERMINALS from 'update_terminal' function:
+> Table: C9_DISPLAY.TERMINALS from 'update_terminal' function, did not contain any keys.
+---
+LOGGED @ 11:22 AM:
+>>> table: 11dfac61:
+> Key: setTextColor | Value: function: 4781d483
+> Key: display | Value: function: 55450cc
+> Key: terminal_name | Value: terminal
+> Key: write | Value: function: 698448a3
+> Key: setBackgroundColor | Value: function: 3bda0a70
+> Key: setCursorPos | Value: function: 72b6f444
+> Table: table: 11dfac61, did not contain any keys.
+---
+LOGGED @ 4:21 PM:
+>>> C9_DISPLAY.TERMINALS from 'update_terminal' function:
+> *Note: Table: C9_DISPLAY.TERMINALS from 'update_terminal' function, did not contain any numerical keys.
+---
+LOGGED @ 4:21 PM:
+>>> C9_DISPLAY.TERMINALS from 'create_terminal_table' function:
+> Key: terminal | Value: {}
+> *Note: Table: C9_DISPLAY.TERMINALS from 'create_terminal_table' function, did not contain any numerical keys.
+---
+LOGGED @ 4:25 PM:
+>>> table: 65316fc:
+> Key: setTextColor | Value: function: 621a5776
+> Key: display | Value: function: 47c9e113
+> Key: terminal_name | Value: terminal
+> Key: write | Value: function: 59b3ebe0
+> Key: setBackgroundColor | Value: function: 3a997c9a
+> Key: setCursorPos | Value: function: a083d58
+> *Note: Table: table: 65316fc, did not contain any numerical keys.
+---

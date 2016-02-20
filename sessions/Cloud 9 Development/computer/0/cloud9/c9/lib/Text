@@ -143,8 +143,7 @@ in the most advanced way possible.
                                           a new line when the width is met. Or,
                                           pass ['concat'] to insert a ... before
                                           the width border is met."
-[screen]    : {#}           :: OPTIONAL: "Specify a screen_index table if there is
-										  one."
+[screen]    : {TABLE_OBJ}   :: OPTIONAL: "Add your screen object here if you have one."
 [centerX]   : {BOOL}        :: OPTIONAL: "Whether or not to center horizontally."
 [centerY]   : {BOOL}        :: OPTIONAL: "Whether or not to center vertically."
 [roundX]    : {STR}         :: OPTIONAL: "Pass ['ceil'] as an argument for
@@ -198,14 +197,13 @@ function display(pars)
 	local w, h = term.getSize()
 	local xPos, yPos = 0, 0
 	local paragraph = {}
-	local screen_table = Framework.pull(Reference.INT_SCREEN_FW)
+	local screen_table = Framework.pull(Reference.INT_SCREENS_FW)
 
 	pars.foreground = pars.foreground or Reference.OS_DEFAULT_FOREGROUNDCOLOR
 	pars.background = pars.background or Reference.OS_DEFAULT_BACKGROUNDCOLOR
 	pars.startX = pars.startX or xPos
 	pars.startY = pars.startY or yPos
 	pars.wrapper = pars.wrapper or "concat"
-	pars.screen = pars.screen or #screen_table
 	pars.centerX = pars.centerX or false
 	pars.centerY = pars.centerY or false
 	pars.roundX = pars.roundX or "ceil"
@@ -219,7 +217,6 @@ function display(pars)
 	if type(pars.background) ~= "number" and type(pars.background) ~= "table" then error("[background] must be type: number or table!", 2) end
 	if type(pars.startX) ~= "number" then error("[startX] must be type: number!", 2) end
 	if type(pars.startY) ~= "number" then error("[startY] must be type: number!", 2) end
-	if type(pars.screen) ~= "number" then error("[screen] must be type: number!", 2) end
 	if type(pars.centerX) ~= "boolean" then error("[centerX] must be type: boolean!", 2) end
 	if type(pars.centerY) ~= "boolean" then error("[centerY] must be type: boolean!", 2) end
 	if type(pars.width) ~= "number" then error("[width] must be type: number!", 2) end
@@ -237,6 +234,16 @@ function display(pars)
 	end
 
 	-- >> Applying Unknown Variable Patches:
+	if pars.screen then
+		if pars.screen.terminal then
+			pars.screen = pars.screen.terminal
+		else
+			error("[screen] is not a valid terminal object!", 2)
+		end
+	else
+		pars.screen = term.current()
+	end
+
 	if xPos == 0 and not pars.centerX then
 		xPos = 1
 	end
@@ -329,25 +336,26 @@ function display(pars)
 			end
 
 			for k = 1, #sentence do
+				local current_word = (k + last_index)
 				-- // Appears to be a rounding error here, +1 temporary fix!
-				paragraph[k + last_index]["xPos"] = xPos + 1
+				paragraph[current_word]["xPos"] = xPos + 1
 				-- // If we are multi-lining, then we need to keep centered.
 				if pars.centerY then
-					paragraph[k + last_index]["yPos"] = yPos - 1
+					paragraph[current_word]["yPos"] = yPos - 1
 				else
-					paragraph[k + last_index]["yPos"] = yPos
+					paragraph[current_word]["yPos"] = yPos
 				end
 				
 				xPos = xPos + sentence[k]:len()
 				
-				-- // Removes extra padded background bordering for those who care.
+				-- // Removes the extra space on the last word of a sentence.
 				if k == #sentence then
-					paragraph[k + last_index]["text"] = string.gsub(paragraph[k + last_index]["text"], " ", "")
+					paragraph[current_word]["text"] = string.gsub(paragraph[current_word]["text"], " ", "")
 				end
 
 				-- // Declares the end of the paragraph if you applied this wrapper.
 				if pars.wrapper == "concat" and k == #sentence then
-					paragraph[k + last_index]["display"] = false
+					paragraph[current_word]["display"] = false
 				end 
 			end 
 
@@ -361,10 +369,10 @@ function display(pars)
 	-- >> Write Sentence to Screen:
 	for i = 1, #paragraph do
 		if paragraph[i]["display"] then
-			term.setCursorPos(paragraph[i]["xPos"], paragraph[i]["yPos"])
-			term.setTextColor(paragraph[i]["foreground"])
-			term.setBackgroundColor(paragraph[i]["background"])
-			term.write(paragraph[i]["text"])
+			pars.screen.setCursorPos(paragraph[i]["xPos"], paragraph[i]["yPos"])
+			pars.screen.setTextColor(paragraph[i]["foreground"])
+			pars.screen.setBackgroundColor(paragraph[i]["background"])
+			pars.screen.write(paragraph[i]["text"])
 		else
 			break
 		end
@@ -376,12 +384,12 @@ end
 
 --[[
 # To-Do List:
-- Possibly add Literal strings that are not
+- <WIP> Possibly add Literal strings that are not
 available through the term API. Most importantly
 the new line literal "\n", which is just replaced
 by a " " when printed. 
 
-- Implement the display function with the screen
+- <DONE> Implement the display function with the screen
 library in order to provide infrastructure to the
 operating system.
 ]]

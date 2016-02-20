@@ -2,9 +2,9 @@
   "storage-limit" : 1048576,
   "label" : "MAIN_TURTLE",
   "advanced" : true,
-  "on" : true,
-  "screen-x" : 803,
-  "screen-y" : 298,
+  "on" : false,
+  "screen-x" : 180,
+  "screen-y" : 86,
   "side-data" : {
     "bottom" : {
       "peripheral" : {

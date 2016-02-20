@@ -31,6 +31,8 @@ local main_object = {
 	["startX"] = 1;
 	["startY"] = 1;
 	["text"] = "*";
+	["terminal"] = term.current();
+	["terminal_name"] = "terminal";
 	["foreground"] = Reference.OS_DEFAULT_FOREGROUNDCOLOR;
 	["background"] = Reference.OS_DEFAULT_BACKGROUNDCOLOR;
 	["visible"] = true;
@@ -43,6 +45,8 @@ local new_object = {
 	["startX"] = 5;
 	["startY"] = 5;
 	["text"] = "/";
+	["terminal"] = term.current();
+	["terminal_name"] = "terminal";
 	["foreground"] = Reference.OS_DEFAULT_BACKGROUNDCOLOR;
 	["background"] = Reference.OS_DEFAULT_FOREGROUNDCOLOR;
 	["visible"] = true;
@@ -54,15 +58,22 @@ Screen.create_screen_table(new_object)
 term.setCursorPos(1, 1)
 term.clear()
 
-Screen.draw_screen(main_object["index"])
-Screen.draw_screen(new_object["index"])
+Screen.draw_screen(main_object)
+Screen.draw_screen(new_object)
 
 sleep(3)
 
 new_object.visible = false
 Screen.create_screen_table(new_object)
-Screen.update_terminal()
+Screen.update_terminal(new_object)
+Screen.update_peripheral(new_object.terminal, new_object.terminal_name)
 
-sleep(5)
+sleep(3)
+
+Screen.update_terminal(new_object)
+local new_screen = Screen.new()
+
+Framework.adv_push(Reference.OS_LOG, new_screen, "New Screen Table")
+print("Successfully pulled & pushed new screen!")
 
 -- End of Document

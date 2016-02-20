@@ -7,7 +7,6 @@ IF EXIST %CD% (
 	java -Dcom.xtansia.ccemu.path=%CD% -jar ccemuredux-launcher-1.8.9.jar
 ) ELSE (
 	ECHO There was an error in determining working directory!
-	ECHO Unable to Determine Drive
 )
 
 ECHO Session was terminated by User

@@ -5,6 +5,7 @@
 os.loadAPI("cloud9/environment/Reference")
 os.loadAPI(Reference.LIB_TEXT)
 os.loadAPI(Reference.LIB_FRAMEWORK)
+os.loadAPI(Reference.LIB_SCREEN)
 
 term.setCursorPos(1, 1)
 term.setTextColor(colors.orange)
@@ -63,24 +64,24 @@ local words = {
 
 local words_foreground = {
 	[1] = colors.orange;
-	[2] = colors.blue;
+	--[[[2] = colors.blue;
 	[3] = colors.red;
 	[4] = colors.cyan;
 	[5] = colors.purple;
 	[6] = colors.white;
 	[7] = colors.black;
-	[8] = colors.pink;
+	[8] = colors.pink;]]
 }
 
 local words_background = {
-	[1] = colors.black;
-	[2] = colors.white;
+	[1] = colors.blue;
+	--[[[2] = colors.white;
 	[3] = colors.black;
 	[4] = colors.orange;
 	[5] = colors.brown;
 	[6] = colors.black;
 	[7] = colors.white;
-	[8] = colors.cyan;
+	[8] = colors.cyan;]]
 }
 
 local new_sentence = Text.display {

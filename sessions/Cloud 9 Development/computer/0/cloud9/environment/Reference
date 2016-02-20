@@ -23,6 +23,7 @@ LIB_SCREEN = "cloud9/c9/lib/Screen"
 LIB_TEXT = "cloud9/c9/lib/Text"
 
 -- OS Interface Directory Files:
-INT_SCREEN_FW = "cloud9/c9/interfaces/Screen.fw"
+INT_SCREENS_FW = "cloud9/c9/interfaces/Screens.fw"
+INT_TERMINALS_FW = "cloud9/c9/interfaces/Terminals.fw"
 
 -- End of Document

@@ -124,4 +124,63 @@ function push(fw_file, data)
 	return true
 end
 
+--[[
+# Function: 'adv_push', Documentation:
+
+This function is used to log variables, and 
+should not be used to push/pull information from
+a framework file. The file does not even need to
+be a framework file for logging. 
+
+> Parameters: 
+
+[fw_file]  : "Name of the framework file.
+              This file must already exist!"
+[data]     : "The table you wish to push."
+[data_name]: "The variable name of your data; optional."
+<>
+
+> Returns:
+['Boolean']: "Returns true/false based off of
+              successful code execution."
+<>
+]]
+
+function adv_push(fw_file, data, data_name)
+	-- # Checking Variables:
+	if not fw_file then error("A framework file is required!", 2) end
+	if not fs.exists(fw_file) then error("The provided path does not exist!", 2) end
+	if not data_name then data_name = tostring(data) end
+
+	-- # Declaring Local Variables:
+	local file = fs.open(fw_file, "a") 
+	
+	file.writeLine("LOGGED @ "..textutils.formatTime(os.time(), false)..":")
+	file.writeLine(">>> "..data_name..":")
+
+	-- # Code:
+	if type(data) == "table" then
+		for key, value in pairs(data) do
+			if type(value) == "function" then
+				file.writeLine("> Key: "..tostring(key).." | Value: "..tostring(value))
+			elseif type(value) == "table" then
+				file.writeLine("> Key: "..key.." | Value: "..textutils.serialize(value))
+			else
+				file.writeLine("> Key: "..key.." | Value: "..value)
+			end
+		end
+
+		if #data == 0 then
+			file.writeLine("> *Note: Table: "..data_name..", did not contain any numerical keys.")
+		end
+	else
+		file.writeLine("> Data: "..data)
+	end
+	
+	file.writeLine("---")
+	file.close()
+	
+	return true
+end
+
 -- End of Document

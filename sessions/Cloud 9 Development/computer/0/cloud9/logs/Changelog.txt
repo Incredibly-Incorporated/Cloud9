@@ -1,0 +1,9 @@
+> Changelog:
+ - Fixed a bug in the Screen library that returned a misspelled variable. 
+ - Made some local variable name changes to the display function in the Text library.
+ - Added functions to Screen internal _functions namespace. Too many changes, check library documentation.
+ - Added new local functions, and renamed a few current local functions. Too many changes, check library documentation.
+ - Renamed Screen.fw to Screens.fw to accurately represent its purpose.
+ - Added a Terminals.fw file to provide a hook when necessary. 
+ - Added an 'adv_push' function to the Framework library for providing advanced
+ table logging for developers.
