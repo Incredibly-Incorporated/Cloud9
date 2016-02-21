@@ -1,0 +1,58 @@
+--[[
+Version: 0.0.1
+> Testing all functions to ensure everything works
+as intended...
+--- RESULTS ---
+> In progress of making screens act like similar to
+the term API in regards of having a terminal object,
+but not using the syntax for passing an object, <:>.
+
+<>
+]]
+
+os.loadAPI("cloud9/environment/Reference")
+os.loadAPI(Reference.LIB_CRAFT)
+os.loadAPI(Reference.LIB_FRAMEWORK)
+os.loadAPI(Reference.LIB_SCREEN)
+
+term.setCursorPos(1, 1)
+term.clear()
+
+local w, h = term.getSize()
+
+local new_screen = {
+    ["index"] = 1;
+    ["terminal"] = term.current();
+    ["terminal_name"] = "terminal";
+    ["width"] = w;
+    ["height"] = h;
+    ["startX"] = 1;
+    ["startY"] = 1;
+    ["text"] = " ";
+    ["background"] = Reference.OS_DEFAULT_BACKGROUNDCOLOR;
+    ["foreground"] = Reference.OS_DEFAULT_FOREGROUNDCOLOR;
+    ["visible"] = true;
+}
+
+screen = Screen.new(new_screen)
+
+screen.setCursorPos(1, 1)
+screen.setBackgroundColor(colors.black)
+screen.setTextColor(colors.white)
+screen.clear()
+
+for i = 1, 5 do
+    screen.setCursorPos(i, 1)
+    screen.write(i)
+end
+
+for i = 2, 5 do
+    screen.setCursorPos(1, i)
+    screen.write(i..":")
+end
+
+Framework.adv_push(Reference.OS_LOG, screen, "New Screen Table")
+Craft.drawPixel(5, 5, colors.red, screen) sleep(3)
+Craft.drawLine(5, 5, 10, 10, colors.blue, screen) sleep(3)
+
+-- End of Document

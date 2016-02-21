@@ -29,33 +29,33 @@ file to use in conjunction with the executing script.
 ]]
 
 function create(file, directory)
-	-- # Checking Variables:
-	if not file then error("A file name is required!", 2) end
-	if not directory then error("A directory path is required!", 2) end
-	
-	if type(file) ~= "string" or type(directory) ~= "string" then
-		error("Arguments must be type string!", 2)
-	end
+    -- # Checking Variables:
+    if not file then error("A file name is required!", 2) end
+    if not directory then error("A directory path is required!", 2) end
+    
+    if type(file) ~= "string" or type(directory) ~= "string" then
+        error("Arguments must be type string!", 2)
+    end
 
-	-- # Declaring Local Variables:
-	local path = nil
+    -- # Declaring Local Variables:
+    local path = nil
 
-	if string.find(file, ".fw") then
-		path = directory.."/"..file
-	else
-		path = directory.."/"..file..".fw"
-	end 
+    if string.find(file, ".fw") then
+        path = directory.."/"..file
+    else
+        path = directory.."/"..file..".fw"
+    end 
 
-	-- # Code:
-	if not fs.exists(path) then
-		new_file = fs.open(path, "w")
-		new_file.writeLine("{}")
-	else
-		return path
-	end
+    -- # Code:
+    if not fs.exists(path) then
+        new_file = fs.open(path, "w")
+        new_file.writeLine("{}")
+    else
+        return path
+    end
 
-	new_file.close()
-	return path
+    new_file.close()
+    return path
 end
 
 --[[
@@ -77,17 +77,17 @@ fw file to update your current executing script.
 ]]
 
 function pull(fw_file)
-	-- # Checking Variable:
-	if not fw_file then error("A framework file is required!", 2) end
-	if not fs.exists(fw_file) then error("The provided path does not exist!", 2) end
+    -- # Checking Variable:
+    if not fw_file then error("A framework file is required!", 2) end
+    if not fs.exists(fw_file) then error("The provided path does not exist!", 2) end
 
-	-- # Declaring Local Variables:
-	local pull_file = fs.open(fw_file, "r")
-	local data = pull_file.readAll()
+    -- # Declaring Local Variables:
+    local pull_file = fs.open(fw_file, "r")
+    local data = pull_file.readAll()
 
-	-- # Code:
-	pull_file.close()
-	return textutils.unserialize(data)
+    -- # Code:
+    pull_file.close()
+    return textutils.unserialize(data)
 end
 
 --[[
@@ -98,9 +98,12 @@ current executing script to the defined fw file.
 
 > Parameters: 
 
-[fw_file]: "Name of the framework file.
-            This file must already exist!"
-[data]   : "The table you wish to push."
+[fw_file]: <STR>     :: "Name of the framework file.
+                         This file must already exist!"
+[data]   : <TABLE>   :: "The table you wish to push."
+[sort]   : <BOOLEAN> :: "Whether or not to sort your table."
+[key]    : <BOOLEAN> :: "Whether or not to sort by key or value."
+[LtoG]   : <BOOLEAN> :: "Whether or not to sort form least to greatest."
 <>
 
 > Returns:
@@ -109,19 +112,96 @@ current executing script to the defined fw file.
 <>
 ]]
 
-function push(fw_file, data)
-	-- # Checking Variables:
-	if not fw_file then error("A framework file is required!", 2) end
-	if not fs.exists(fw_file) then error("The provided path does not exist!", 2) end
-	if type(data) ~= "table" then error("Data must be provided as type 'table'!", 2) end
+function push(fw_file, data, sort, key, LtoG)
+    -- # Declaring Local Variables: 
+    -- >>> Developer Note: Sorting is still very WIP, not usable yet!
+    --local sort = sort or false
+    --local key = key or false
+    --local LtG = LtG or false
+    local sort = false
+    local key = false
+    local LtG = false
 
-	-- # Declaring Local Variables:
-	local push_file = fs.open(fw_file, "w")
+    -- # Checking Variables:
+    if not fw_file then error("A framework file is required!", 2) end
+    if not fs.exists(fw_file) then error("The provided path does not exist!", 2) end
+    if type(data) ~= "table" then error("[data] must be type: 'table'!", 2) end
+    if type(sort) ~= "boolean" then error("[sort] must be type: 'boolean'", 2) end
+    if type(key) ~= "boolean" then error("[key] must be type: 'boolean'", 2) end
+    if type(LtG) ~= "boolean" then error("[LtG] must be type: 'boolean'", 2) end
 
-	-- # Code:
-	push_file.write(textutils.serialize(data))
-	push_file.close()
-	return true
+    -- # Declaring Local Variables:
+    local push_file = fs.open(fw_file, "w")
+
+    -- # Code:
+    if sort then
+        local table_numeric = {}
+        local index_tracker = {}
+
+        local function updateNumeric(t)
+            local i = 0
+            for k, v in pairs(t) do
+                i = i + 1
+                table.insert(table_numeric, {key = k, value = v})
+
+                if type(v) == "table" then
+                    table.insert(index_tracker, i)
+                end
+            end
+        end
+
+        updateNumeric(data)
+
+        for k, v in pairs(index_tracker) do
+            print("k: "..k.." | v: "..v)
+        end
+        sleep(3)
+
+        while #index_tracker > 0 do
+            for iteration = 1, #index_tracker do
+                local i = 0
+                for k, v in pairs(data) do
+                    i = i + 1
+                    if i == index_tracker[iteration] then
+                        table.insert(table_numeric, {key = k, value = v})
+                        table.remove(index_tracker, iteration)
+                    end
+                end
+            end
+        end
+
+        local fSort = function(a, b)
+            if key and LtG then
+                return a.key < b.key 
+            elseif key and not LtG then
+                return a.key > b.key
+            elseif not key and LtG then
+                return a.value < b.value
+            elseif not key and not LtG then
+                return a.value > b.value
+            else
+                error("Could not sort table properly!", 2)
+            end
+        end
+            
+        table.sort(table_numeric, fSort)
+        for k, v in pairs(table_numeric) do
+            print("k: "..tostring(k).." | v: "..tostring(v))
+            sleep(0.1)
+        end
+
+        --push_file.writeLine(string.format("Row: %d | Key: %s | Value: %s", i, v.key, v.value))
+        
+        push_file.write(textutils.serialize(table_numeric))
+        push_file.close()
+        
+        return true
+    else
+        push_file.write(textutils.serialize(data))
+        push_file.close()
+        
+        return true
+    end
 end
 
 --[[
@@ -147,40 +227,71 @@ be a framework file for logging.
 ]]
 
 function adv_push(fw_file, data, data_name)
-	-- # Checking Variables:
-	if not fw_file then error("A framework file is required!", 2) end
-	if not fs.exists(fw_file) then error("The provided path does not exist!", 2) end
-	if not data_name then data_name = tostring(data) end
+    -- # Checking Variables:
+    if not fw_file then error("A framework file is required!", 2) end
+    if not fs.exists(fw_file) then error("The provided path does not exist!", 2) end
+    if not data_name then data_name = tostring(data) end
 
-	-- # Declaring Local Variables:
-	local file = fs.open(fw_file, "a") 
-	
-	file.writeLine("LOGGED @ "..textutils.formatTime(os.time(), false)..":")
-	file.writeLine(">>> "..data_name..":")
+    -- # Declaring Local Variables:
+    local file = fs.open(fw_file, "a") 
 
-	-- # Code:
-	if type(data) == "table" then
-		for key, value in pairs(data) do
-			if type(value) == "function" then
-				file.writeLine("> Key: "..tostring(key).." | Value: "..tostring(value))
-			elseif type(value) == "table" then
-				file.writeLine("> Key: "..key.." | Value: "..textutils.serialize(value))
-			else
-				file.writeLine("> Key: "..key.." | Value: "..value)
-			end
-		end
+    local function hideFunctions(t, tName)
+        for k, v in pairs(t) do
+            if type(v) == "table" then
+                for k2, v2 in pairs(v) do
+                    if type(v2) == "function" then
+                        file.writeLine(">>> Parent Table: "..tName..", Child Table: "..tostring(k2)..", Key: "..tostring(k2).." | Value: "..tostring(v2))
+                    elseif type(v2) == "table" then
+                        hideFunctions(v2)
+                        break
+                    else
+                        file.writeLine(">>> Table: "..tName..", Key: "..tostring(k).." | Value: "..textutils.serialize(v))
+                    end
+                end
+            elseif type(v) == "function" then
+                file.writeLine(">>> Table: "..tName..", Key: "..tostring(k).." | Value: "..tostring(v))
+            else
+                file.writeLine("> Key: "..k.." | Value: "..textutils.serialize(t))
+            end
+        end
+    end
 
-		if #data == 0 then
-			file.writeLine("> *Note: Table: "..data_name..", did not contain any numerical keys.")
-		end
-	else
-		file.writeLine("> Data: "..data)
-	end
-	
-	file.writeLine("---")
-	file.close()
-	
-	return true
+    local function isFunction(k, v)
+        if type(v) == "function" then
+            return tostring(k), tostring(v)
+        elseif type(v) == "table" then
+            return tostring(k), textutils.serialize(v)
+        else
+            return tostring(k), tostring(v)
+        end
+    end
+
+    -- # Code:
+    file.writeLine("LOGGED @ "..textutils.formatTime(os.time(), false)..":")
+    file.writeLine(">>> "..data_name..":")
+
+    if type(data) == "table" then
+        for key, value in pairs(data) do
+            if type(value) == "table" then
+                file.writeLine("> Key: "..key.." | Value: "..tostring(value)..", has been formatted for view:")
+                hideFunctions(value, key)
+            else
+                local k, v = isFunction(key, value)
+                file.writeLine("> Key: "..k.." | Value: "..v)
+            end
+        end
+
+        if #data == 0 then
+            file.writeLine("> *Note: Table: "..data_name..", did not contain any numerical keys.")
+        end
+    else
+        file.writeLine("> Data: "..tostring(data))
+    end
+    
+    file.writeLine("---")
+    file.close()
+    
+    return true
 end
 
 -- End of Document

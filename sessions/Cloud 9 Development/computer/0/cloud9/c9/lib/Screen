@@ -16,25 +16,25 @@ of the terminal.
 
 Each pixel of the terminal contains its own table.
 The table will contain the following indexes:
-	> ["background"] : The background color.
-	> ["foreground"] : The foreground text color.
-	> ["text"]       : The text to display.
+    > ["background"] : The background color.
+    > ["foreground"] : The foreground text color.
+    > ["text"]       : The text to display.
 
 The screen framework file will contain the following layout:
-	> [1] = {
-		[1] = {
-			["background"] = Reference.OS_DEFAULT_BACKGROUNDCOLOR;
-			["foreground"] = Reference.OS_DEFAULT_FOREGROUNDCOLOR;
-			["text"] = " ";
-		};
-		[2] = {
-			["background"] = Reference.OS_DEFAULT_BACKGROUNDCOLOR;
-			["foreground"] = Reference.OS_DEFAULT_FOREGROUNDCOLOR;
-			["text"] = " ";
-		};
-		... etc, etc, etc. until each pixel is documented.
-		Fun Fact: The default terminal is 969 pixels!
-	};
+    > [1] = {
+        [1] = {
+            ["background"] = Reference.OS_DEFAULT_BACKGROUNDCOLOR;
+            ["foreground"] = Reference.OS_DEFAULT_FOREGROUNDCOLOR;
+            ["text"] = " ";
+        };
+        [2] = {
+            ["background"] = Reference.OS_DEFAULT_BACKGROUNDCOLOR;
+            ["foreground"] = Reference.OS_DEFAULT_FOREGROUNDCOLOR;
+            ["text"] = " ";
+        };
+        ... etc, etc, etc. until each pixel is documented.
+        Fun Fact: The default terminal is 969 pixels!
+    };
 
 The parent table will be controlled by the
 framework library, which can be accessed globally 
@@ -55,6 +55,8 @@ purpose of assisting the library.
 os.loadAPI("cloud9/environment/Reference")
 os.loadAPI(Reference.LIB_FRAMEWORK)
 
+local w, h = term.getSize()
+
 --[[
 # Namespace: 'C9_DISPLAY', Documentation:
 
@@ -64,21 +66,21 @@ the main display. To wrap your head around this
 refer to the documentation above.
 
 Object Indexes:
-	> ["index"]        : "The priority of your screen. The
-	-->                   smaller numbers take priority. Ex: 1 
-	-->                   overlaps 2."
-	> ["terminal"]     : "The terminal to make the screen for."
-	> ["terminal_name"]: "The name of your terminal for indexing purposes."
-	> ["width"]        : "The width of your screen."
-	> ["height"]       : "The height of your screen."
-	> ["startX"]       : "Where your screen starts horizontally."
-	> ["startY"]       : "Where your screen starts vertically."
-	> ["text"]         : "Pixel place-holder, meant as a placeholder,
-	-->                   but perhaps you want a character in each pixel 
-	-->                   of your screen."
-	> ["background"]   : "The background color of your screen."
-	> ["foreground"]   : "The font color of your screen."
-	> ["visible"]      : "Whether or not your screen is visible."  
+    > ["index"]        : "The priority of your screen. The
+    -->                   smaller numbers take priority. Ex: 1 
+    -->                   overlaps 2."
+    > ["terminal"]     : "The terminal to make the screen for."
+    > ["terminal_name"]: "The name of your terminal for indexing purposes."
+    > ["width"]        : "The width of your screen."
+    > ["height"]       : "The height of your screen."
+    > ["startX"]       : "Where your screen starts horizontally."
+    > ["startY"]       : "Where your screen starts vertically."
+    > ["text"]         : "Pixel place-holder, meant as a placeholder,
+    -->                   but perhaps you want a character in each pixel 
+    -->                   of your screen."
+    > ["background"]   : "The background color of your screen."
+    > ["foreground"]   : "The font color of your screen."
+    > ["visible"]      : "Whether or not your screen is visible."  
 <>
 ]]
 
@@ -86,20 +88,20 @@ _G.C9_DISPLAY = {}
 C9_DISPLAY.SCREENS = {}
 C9_DISPLAY.TERMINALS = {}
 C9_DISPLAY.SCREEN_PROTOTYPE = {
-	["index"] = 1;
-	["terminal"] = term.current();
-	["terminal_name"] = "terminal";
-	["width"] = 10;
-	["height"] = 10;
-	["startX"] = 5;
-	["startY"] = 5;
-	["text"] = " ";
-	["background"] = Reference.OS_DEFAULT_BACKGROUNDCOLOR;
-	["foreground"] = Reference.OS_DEFAULT_FOREGROUNDCOLOR;
-	["visible"] = true;
+    ["index"] = 1;
+    ["terminal"] = term.current();
+    ["terminal_name"] = "terminal";
+    ["width"] = w;
+    ["height"] = h;
+    ["startX"] = 1;
+    ["startY"] = 1;
+    ["text"] = " ";
+    ["background"] = Reference.OS_DEFAULT_BACKGROUNDCOLOR;
+    ["foreground"] = Reference.OS_DEFAULT_FOREGROUNDCOLOR;
+    ["visible"] = true;
 }
 C9_DISPLAY.SCREEN_PROTOTYPE.mt = {
-	["__index"] = C9_DISPLAY.SCREEN_PROTOTYPE;
+    ["__index"] = C9_DISPLAY.SCREEN_PROTOTYPE;
 }
 
 -- ============= -- LOCAL ZONE -- ============= --
@@ -110,99 +112,6 @@ are simply here to shorten the size of this file,
 and keep the code clean.
 <>
 ]]
-
---[[
-# Local Function: 'create_terminal_table', Documentation:
-
-This function is used to create a new index in the Terminals
-framework file. It uses the C9 display namespace to determine
-terminal names, as defined by your screens.
-
-> Parameters:
-
-[object]: "The screen to pull terminal name from."
-
-> Returns:
-
-[N/A]: "Nothing is returned from this local function."
-<>
-]]
-
-local function create_terminal_table(object)
-	-- # Code:
-	C9_DISPLAY.TERMINALS[object.terminal_name] = C9_DISPLAY.TERMINALS[object.terminal_name] or {}
-end
-
---[[
-# Local Function: 'create_screen_table', Documentation:
-
-This function is used to create a new index in the Screens
-framework file. It uses the screen information you provided,
-or obtained from the C9 display namespace metatable.
-
-> Parameters:
-
-[object]: "The screen object to pull information from."
-
-> Returns:
-
-[N/A]: "Nothing is returned from this local function."
-<>
-]]
-
-local function create_screen_table(object)
-	-- # Declaring Local Variables:
-	local new_screen = {}
-	local terminal = object.terminal_name
-
-	if not C9_DISPLAY.SCREENS[terminal] then
-		C9_DISPLAY.SCREENS[terminal] = {}
-	end
-
-	-- # Code:
-
-	for y = object.startY, object.height do
-		for x = object.startX, object.width do
-			local pixel_template = {
-				["xPos"] = x;
-				["yPos"] = y;
-				["foreground"] = object.foreground;
-				["background"] = object.background;
-				["text"] = object.text;
-				["visible"] = object.visible;
-			}
-			table.insert(new_screen, pixel_template)
-		end
-	end
-
-	if not C9_DISPLAY.SCREENS[terminal][object.index] then
-		table.insert(C9_DISPLAY.SCREENS[terminal], object.index, new_screen)
-	else
-		table.remove(C9_DISPLAY.SCREENS[terminal], object.index)
-		table.insert(C9_DISPLAY.SCREENS[terminal], object.index, new_screen)
-	end
-end
-
---[[
-# Local Function: 'update_visibility', Documentation:
-
-This function is used to update any visibility changes on
-your screen object. This local function is called when you use
-your object's, 'change_visibility', function.
-
-> Parameters:
-
-[object]: "The screen to update pixel visibility."
-
-> Returns:
-
-[N/A]: "Nothing is returned from this local function."
-<>
-]]
-
-function update_visibility(object)
-	--
-end
 
 --[[
 # Local Function: 'update_terminal', Documentation:
@@ -223,24 +132,24 @@ pixel matches from over-lapped screens.
 ]]
 
 local function update_terminal(object)
-	-- # Declaring Local Variables:
-	local w, h = object.terminal.getSize()
-	local terminal = object.terminal_name
+    -- # Declaring Local Variables:
+    local w, h = object.terminal.getSize()
+    local terminal = object.terminal_name
 
-	if not C9_DISPLAY.TERMINALS[terminal] then
-		create_terminal_table(object)
-	end
+    if not C9_DISPLAY.TERMINALS[terminal] then
+        create_terminal_table(object)
+    end
 
-	-- # Code:
-	for screen = 1, #C9_DISPLAY.SCREENS[terminal] do
-		for pixel = 1, #C9_DISPLAY.SCREENS[terminal][screen] do
-			local row = C9_DISPLAY.SCREENS[terminal][screen][pixel]["yPos"]
-			local column = C9_DISPLAY.SCREENS[terminal][screen][pixel]["xPos"]
-			local new_index = column..", "..row
+    -- # Code:
+    for screen = 1, #C9_DISPLAY.SCREENS[terminal] do
+        for pixel = 1, #C9_DISPLAY.SCREENS[terminal][screen] do
+            local row = C9_DISPLAY.SCREENS[terminal][screen][pixel]["yPos"]
+            local column = C9_DISPLAY.SCREENS[terminal][screen][pixel]["xPos"]
+            local new_index = column..", "..row
 
-			C9_DISPLAY.TERMINALS[terminal][new_index] = pixel
-		end
-	end
+            C9_DISPLAY.TERMINALS[terminal][new_index] = pixel
+        end
+    end
 end
 
 --[[
@@ -260,44 +169,145 @@ from the passed terminal.
 ]]
 
 local function update_peripheral(current_terminal, terminal_name)
-	-- # Declaring Local Variables:
-	local terminal = terminal_name
+    -- # Declaring Local Variables:
+    local terminal = terminal_name
 
-	-- # Code:
-	if #C9_DISPLAY.SCREENS[terminal] > 1 then
-		for screen = #C9_DISPLAY.SCREENS[terminal], 1, -1 do
-			local new_screen = screen - 1
+    -- # Code:
+    if #C9_DISPLAY.SCREENS[terminal] > 1 then
+        for screen = #C9_DISPLAY.SCREENS[terminal], 1, -1 do
+            local new_screen = screen - 1
 
-			if new_screen == 0 then 
-				break 
-			end
+            if new_screen == 0 then 
+                break 
+            end
 
-			for new_pixel = 1, #C9_DISPLAY.SCREENS[terminal][new_screen] do				
-				for pixel = 1, #C9_DISPLAY.SCREENS[terminal][screen] do
-					local function update_screen()
-						current_terminal.setCursorPos(C9_DISPLAY.SCREENS[terminal][new_screen][new_pixel]["xPos"], C9_DISPLAY.SCREENS[terminal][new_screen][new_pixel]["yPos"])
-						current_terminal.setTextColor(C9_DISPLAY.SCREENS[terminal][new_screen][new_pixel]["foreground"])
-						current_terminal.setBackgroundColor(C9_DISPLAY.SCREENS[terminal][new_screen][new_pixel]["background"])
-						current_terminal.write(C9_DISPLAY.SCREENS[terminal][new_screen][new_pixel]["text"])
-					end
+            for new_pixel = 1, #C9_DISPLAY.SCREENS[terminal][new_screen] do             
+                for pixel = 1, #C9_DISPLAY.SCREENS[terminal][screen] do
+                    local function update_screen()
+                        current_terminal.setCursorPos(C9_DISPLAY.SCREENS[terminal][new_screen][new_pixel]["xPos"], C9_DISPLAY.SCREENS[terminal][new_screen][new_pixel]["yPos"])
+                        current_terminal.setTextColor(C9_DISPLAY.SCREENS[terminal][new_screen][new_pixel]["foreground"])
+                        current_terminal.setBackgroundColor(C9_DISPLAY.SCREENS[terminal][new_screen][new_pixel]["background"])
+                        current_terminal.write(C9_DISPLAY.SCREENS[terminal][new_screen][new_pixel]["text"])
+                    end
 
-					if C9_DISPLAY.SCREENS[terminal][new_screen][pixel]["visible"] == true then
-						if C9_DISPLAY.SCREENS[terminal][screen][pixel]["xPos"] == C9_DISPLAY.SCREENS[terminal][new_screen][new_pixel]["xPos"] then
-							if C9_DISPLAY.SCREENS[terminal][screen][pixel]["yPos"] == C9_DISPLAY.SCREENS[terminal][new_screen][new_pixel]["yPos"] then
-								if C9_DISPLAY.SCREENS[terminal][screen][pixel]["foreground"] ~= C9_DISPLAY.SCREENS[terminal][new_screen][new_pixel]["foreground"] then
-									update_screen()
-								elseif C9_DISPLAY.SCREENS[terminal][screen][pixel]["background"] ~= C9_DISPLAY.SCREENS[terminal][new_screen][new_pixel]["background"] then
-									update_screen()
-								elseif C9_DISPLAY.SCREENS[terminal][screen][pixel]["text"] ~= C9_DISPLAY.SCREENS[terminal][new_screen][new_pixel]["text"] then
-									update_screen()
-								end
-							end
-						end
-					end
-				end
-			end
-		end
-	end
+                    if C9_DISPLAY.SCREENS[terminal][new_screen][pixel]["visible"] == true then
+                        if C9_DISPLAY.SCREENS[terminal][screen][pixel]["xPos"] == C9_DISPLAY.SCREENS[terminal][new_screen][new_pixel]["xPos"] then
+                            if C9_DISPLAY.SCREENS[terminal][screen][pixel]["yPos"] == C9_DISPLAY.SCREENS[terminal][new_screen][new_pixel]["yPos"] then
+                                if C9_DISPLAY.SCREENS[terminal][screen][pixel]["foreground"] ~= C9_DISPLAY.SCREENS[terminal][new_screen][new_pixel]["foreground"] then
+                                    update_screen()
+                                elseif C9_DISPLAY.SCREENS[terminal][screen][pixel]["background"] ~= C9_DISPLAY.SCREENS[terminal][new_screen][new_pixel]["background"] then
+                                    update_screen()
+                                elseif C9_DISPLAY.SCREENS[terminal][screen][pixel]["text"] ~= C9_DISPLAY.SCREENS[terminal][new_screen][new_pixel]["text"] then
+                                    update_screen()
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+end
+
+--[[
+# Local Function: 'create_screen_table', Documentation:
+
+This function is used to create a new index in the Screens
+framework file. It uses the screen information you provided,
+or obtained from the C9 display namespace metatable.
+
+> Parameters:
+
+[object]: "The screen object to pull information from."
+
+> Returns:
+
+[N/A]: "Nothing is returned from this local function."
+<>
+]]
+
+local function create_screen_table(object)
+    -- # Declaring Local Variables:
+    local new_screen = {}
+    local terminal = object.terminal_name
+
+    if not C9_DISPLAY.SCREENS[terminal] then
+        C9_DISPLAY.SCREENS[terminal] = {}
+    end
+
+    -- # Code:
+
+    for y = object.startY, object.height do
+        for x = object.startX, object.width do
+            local pixel_template = {
+                ["xPos"] = x;
+                ["yPos"] = y;
+                ["foreground"] = object.foreground;
+                ["background"] = object.background;
+                ["text"] = object.text;
+                ["visible"] = object.visible;
+            }
+            table.insert(new_screen, pixel_template)
+        end
+    end
+
+    if not C9_DISPLAY.SCREENS[terminal][object.index] then
+        table.insert(C9_DISPLAY.SCREENS[terminal], object.index, new_screen)
+    else
+        table.remove(C9_DISPLAY.SCREENS[terminal], object.index)
+        table.insert(C9_DISPLAY.SCREENS[terminal], object.index, new_screen)
+    end
+    update_terminal(object)
+end
+
+--[[
+# Local Function: 'update_visibility', Documentation:
+
+This function is used to update any visibility changes on
+your screen object. This local function is called when you use
+your object's, 'change_visibility', function.
+
+> Parameters:
+
+[object]   : "The screen to update pixel visibility."
+[isVisible]: "Whether or not show, or hide the screen."
+
+> Returns:
+
+[N/A]: "Nothing is returned from this local function."
+<>
+]]
+
+local function update_visibility(object, isVisibile)
+    -- # Code:
+    if object["visible"] ~= visible then
+        object["visible"] = visible
+        create_screen_table(object)
+    end
+
+    update_peripheral(object.terminal, object.terminal_name)
+end
+
+--[[
+# Local Function: 'create_terminal_table', Documentation:
+
+This function is used to create a new index in the Terminals
+framework file. It uses the C9 display namespace to determine
+terminal names, as defined by your screens.
+
+> Parameters:
+
+[object]: "The screen to pull terminal name from."
+
+> Returns:
+
+[N/A]: "Nothing is returned from this local function."
+<>
+]]
+
+local function create_terminal_table(object)
+    -- # Code:
+    C9_DISPLAY.TERMINALS[object.terminal_name] = C9_DISPLAY.TERMINALS[object.terminal_name] or {}
 end
 
 -- =========== -- END LOCAL ZONE -- =========== --
@@ -312,173 +322,299 @@ table.
 ]]
 
 local _functions = {
-	
-	--[[
-	// # Function: 'display', Documentation:
-	//
-	// This function is used to display the screen to the
-	// main display. It will check what pixels need updated.
-	//
-	// > Parameters:
-	//
-	// [object] : "The screen object."
-	// [visible]: "Whether or not to update the display."
-	//
-	// > Returns:
-	//
-	// [N/A]: "No returns are available for this function."
-	// <>
-	]]
+    
+    --[[
+    // # Function: 'update', Documentation:
+    //
+    // This function is used to update the screen to the
+    // main terminal. It will check what pixels need updated.
+    //
+    // > Parameters:
+    //
+    // [object] : "The screen object."
+    // [visible]: "Whether or not to change visibility of the screen."
+    //
+    // > Returns:
+    //
+    // [N/A]: "No returns are available for this function."
+    // <>
+    ]]
 
-	display = function(object, visible)
-		-- # Checking Variables:
-		if type(visible) ~= "boolean" then error("Visibility must be true or false!", 2) end
+    object.update = function(visible)
+        -- # Checking Variables:
+        if type(visible) ~= "boolean" then error("Visibility must be true or false!", 2) end
 
-		-- # Declaring Local Variables:
-		-- N/A
+        -- # Code:
+        update_visibility(object, visible)
+    end;
 
-		-- # Code:
-		if object["visible"] ~= visible then
-			object["visible"] = visible
-			create_screen_table(object)
-		end
-	end;
+    --[[
+    // # Function: 'clear', Documentation:
+    //
+    // This function is used to clear the screen on the
+    // main terminal. It will check what pixels need updated.
+    //
+    // > Parameters:
+    //
+    // [object] : "The screen object."
+    //
+    // > Returns:
+    //
+    // [N/A]: "No returns are available for this function."
+    // <>
+    ]]
 
-	--[[
-	// # Function: 'setTextColor', Documentation:
-	//
-	// This function is used to set the text color of
-	// your screen. It functions identical to the
-	// term.setTextColor() function from the term API.
-	// 
-	// However, it uses your object's screen for pixel
-	// management.
-	//
-	// > Parameters:
-	//
-	// [object]: "The screen object."
-	// [color] : "The text color."
-	//
-	// > Returns:
-	//
-	// [N/A]: "No returns are available for this function."
-	// <>
-	]]
+    object.clear = function()
+        -- # Declaring Local Variables:
+        local terminal = object.terminal_name
+        local screen = object.index
+        
+        -- # Code:
+        for p = 1, #C9_DISPLAY.SCREENS[terminal][screen] do
+            local pixel = C9_DISPLAY.SCREENS[terminal][screen][p]
+            
+            local function update_pixel()
+                object.setCursorPos(pixel["xPos"], pixel["yPos"])
+                object.setTextColor(object.foreground)
+                object.setBackgroundColor(object.background)
+                object.write(" ")
+            end
 
-	setTextColor = function(object, color)
-		-- # Checking Declared Variables:
-		local color = color or Reference.OS_DEFAULT_FOREGROUNDCOLOR
-		if type(color) ~= "number" then error("[color] must be type: number!", 2) end
+            if pixel["text"] ~= " " then
+                pixel["text"] = " "
+                update_pixel()
+            elseif pixel["foreground"] ~= object.foreground then
+                pixel["foreground"] = object.foreground
+                update_pixel()
+            elseif pixel["background"] ~= object.background then
+                pixel["background"] = object.background
+            end
+        end
+    end;
 
-		-- # Code:
-		object.foreground = color
-	end;
+    --[[
+    // # Function: 'setTextColor', Documentation:
+    //
+    // This function is used to set the text color of
+    // your screen. It functions identical to the
+    // term.setTextColor() function from the term API.
+    // 
+    // However, it uses your object's screen for pixel
+    // management.
+    //
+    // > Parameters:
+    //
+    // [object]: "The screen object."
+    // [color] : "The text color."
+    //
+    // > Returns:
+    //
+    // [N/A]: "No returns are available for this function."
+    // <>
+    ]]
 
-	--[[
-	// # Function: 'setBackgroundColor', Documentation:
-	//
-	// This function is used to set the background color of
-	// your screen. It functions identical to the
-	// term.setBackgroundColor() function from the term API.
-	//
-	// However, it uses your object's creen for pixel
-	// management.
-	//
-	// > Parameters:
-	//
-	// [object]: "The screen object."
-	// [color] : "The background color."
-	//
-	// > Returns:
-	//
-	// [N/A]: "No returns are available for this function."
-	// <>
-	]]
+    object.setTextColor = function(color)
+        -- # Checking Declared Variables:
+        local color = color or Reference.OS_DEFAULT_FOREGROUNDCOLOR
+        if type(color) ~= "number" then error("[color] must be type: number!", 2) end
 
-	setBackgroundColor = function(object, color)
-		-- # Checking Declared Variables:
-		local color = color or Reference.OS_DEFAULT_BACKGROUNDCOLOR
-		if type(color) ~= "number" then error("[color] must be type: number!", 2) end
+        -- # Code:
+        object.foreground = color
+    end;
 
-		-- # Code:
-		object.background = color
-	end;
+    --[[
+    // # Function: 'getTextColor', Documentation:
+    //
+    // This function is used get set the text color of
+    // your screen. It functions identical to the
+    // term.getTextColor() function from the term API.
+    //
+    // > Parameters:
+    //
+    // [object]: "The screen object."
+    //
+    // > Returns:
+    //
+    // [foreground]: "Returns the last text color used by the screen."
+    // <>
+    ]]
 
-	--[[
-	// # Function: 'setCursorPos', Documentation:
-	//
-	// This function is used to set the cursor on your
-	// screen. It functions identical to the term.setCursorPos()
-	// function from the term API.
-	//
-	// > Parameters:
-	//
-	// [object]: "The screen object."
-	// [xPos]  : "The horizontal pixel placement."
-	// [yPos]  : "The vertical pixel placement."
-	//
-	// > Returns: 
-	//
-	// [xPos]: "The last position of x."
-	// [yPos]: "The last position of y."
-	// <>
-	]]
+    object.getTextColor = function()
+        -- # Declaring Local Variables:
+        local foreground = object.terminal.getTextColor()
 
-	setCursorPos = function(object, xPos, yPos)
-		-- # Declaring Local Variables:
-		local curX, curY = object.terminal.getCursorPos()
-		local xPos = xPos or curX
-		local yPos = yPos or curY 
+        -- # Code:
+        return foreground
+    end;
 
-		-- # Checking Variables:
-		if type(xPos) ~= "number" then error("[xPos] must be type: number!", 2) end
-		if type(yPos) ~= "number" then error("[yPos] must be type: number!", 2) end
+    --[[
+    // # Function: 'setBackgroundColor', Documentation:
+    //
+    // This function is used to set the background color of
+    // your screen. It functions identical to the
+    // term.setBackgroundColor() function from the term API.
+    //
+    // However, it uses your object's creen for pixel
+    // management.
+    //
+    // > Parameters:
+    //
+    // [object]: "The screen object."
+    // [color] : "The background color."
+    //
+    // > Returns:
+    //
+    // [N/A]: "No returns are available for this function."
+    // <>
+    ]]
 
-		-- # Code:
-		local screen_xPos = (C9_DISPLAY.SCREENS[object.index][1]["xPos"] - 1)
-		local screen_yPos = (C9_DISPLAY.SCREENS[object.index][1]["yPos"] - 1)
+    object.setBackgroundColor = function(color)
+        -- # Checking Declared Variables:
+        local color = color or Reference.OS_DEFAULT_BACKGROUNDCOLOR
+        if type(color) ~= "number" then error("[color] must be type: number!", 2) end
 
-		local xPos = screen_xPos + xPos
-		local yPos = screen_yPos + yPos
+        -- # Code:
+        object.background = color
+    end;
 
-		object.terminal.setCursorPos(xPos, yPos)
+    --[[
+    // # Function: 'getBackgroundColor', Documentation:
+    //
+    // This function is used to get the background color of
+    // your screen. It functions identical to the
+    // term.getBackgroundColor() function from the term API.
+    //
+    // > Parameters:
+    //
+    // [object]: "The screen object."
+    //
+    // > Returns:
+    //
+    // [background]: "The last background color used on your screen."
+    // <>
+    ]]
 
-		return xPos, yPos 
-	end;
+    object.getBackgroundColor = function()
+        -- # Declaring Local Variables:
+        local background = object.terminal.getBackgroundColor()
 
-	--[[
-	// # Function: 'write', Documentation:
-	//
-	// This function is used to write information to your
-	// screen. It functions almost identical to term.write()
-	//
-	// > Parameters:
-	//
-	// [object]: "The screen object."
-	// [text]  : "The text to write to the screen."
-	//
-	// > Returns:
-	//
-	// [N/A]: "No returns are available for this function."
-	// <>
-	]]
+        -- # Code:
+        return background
+    end;
 
-	write = function(object, text)
-		-- # Declaring Local Variables:
-		local text = tostring(text)
-		local xPos, yPos = object.terminal.getCursorPos()
+    --[[
+    // # Function: 'setCursorPos', Documentation:
+    //
+    // This function is used to set the cursor on your
+    // screen. It functions identical to the term.setCursorPos()
+    // function from the term API.
+    //
+    // > Parameters:
+    //
+    // [object]: "The screen object."
+    // [xPos]  : "The horizontal pixel placement."
+    // [yPos]  : "The vertical pixel placement."
+    //
+    // > Returns: 
+    //
+    // [xPos]: "The last position of x."
+    // [yPos]: "The last position of y."
+    // <>
+    ]]
 
-		-- # Checking Variables:
-		if type(text) ~= "string" then error("[text] must be string!", 2) end
+    object.setCursorPos = function(xPos, yPos)
+        -- # Declaring Local Variables:
+        local terminal = object.terminal_name
+        local screen = object.index
+        local curX, curY = object.terminal.getCursorPos()
+        local xPos = xPos or curX
+        local yPos = yPos or curY 
 
-		-- # Code:
-		local terminal_index = C9_DISPLAY.TERMINALS[object.terminal_name][xPos..", "..yPos]
-		for i = 1, text:len() do
-			local letter = string.sub(text, i, i)
-			C9_DISPLAY.SCREENS[object.index][terminal_index]["text"] = letter
-			object.terminal.write(letter)
-		end
-	end;
+        -- # Checking Variables:
+        if type(xPos) ~= "number" then error("[xPos] must be type: number!", 2) end
+        if type(yPos) ~= "number" then error("[yPos] must be type: number!", 2) end
+
+        -- # Code:
+        local screen_xPos = (C9_DISPLAY.SCREENS[terminal][screen][1]["xPos"] - 1)
+        local screen_yPos = (C9_DISPLAY.SCREENS[terminal][screen][1]["yPos"] - 1)
+
+        local xPos = screen_xPos + xPos
+        local yPos = screen_yPos + yPos
+
+        object.terminal.setCursorPos(xPos, yPos)
+        object.xPos = xPos
+        object.yPos = yPos
+
+        return xPos, yPos 
+    end;
+
+    --[[
+    // # Function: 'getCursorPos', Documentation:
+    //
+    // This function is used to get the last cursor position from
+    // your screen. It functions identical to the term.getCursorPos()
+    // function from the term API.
+    //
+    // > Parameters:
+    //
+    // [object]: "The screen object."
+    //
+    // > Returns: 
+    //
+    // [xPos]: "The last position of x."
+    // [yPos]: "The last position of y."
+    // <>
+    ]]
+
+    object.getCursorPos = function()
+        return object.xPos, object.yPos
+    end;
+
+    --[[
+    // # Function: 'write', Documentation:
+    //
+    // This function is used to write information to your
+    // screen. It functions almost identical to term.write()
+    //
+    // > Parameters:
+    //
+    // [object]: "The screen object."
+    // [text]  : "The text to write to the screen."
+    //
+    // > Returns:
+    //
+    // [N/A]: "No returns are available for this function."
+    // <>
+    ]]
+
+    object.write = function(text)
+        -- # Declaring Local Variables:
+        local terminal = object.terminal_name
+        local screen = object.index
+        local text = tostring(text)
+
+        -- # Checking Variables:
+        if type(text) ~= "string" then error("[text] must be string!", 2) end
+
+        -- # Code:
+        local xPos, yPos = object.terminal.getCursorPos()
+        local xPos, yPos = xPos - 1, yPos - 1
+        
+        for i = 1, text:len() do
+            local xPos, yPos = xPos + i, yPos + i
+            local screen_index = C9_DISPLAY.TERMINALS[terminal][xPos..", "..yPos]
+            local letter = string.sub(text, i, i)
+
+            C9_DISPLAY.SCREENS[terminal][screen][screen_index]["text"] = letter
+            C9_DISPLAY.SCREENS[terminal][screen][screen_index]["xPos"] = xPos
+            C9_DISPLAY.SCREENS[terminal][screen][screen_index]["yPos"] = yPos
+            C9_DISPLAY.SCREENS[terminal][screen][screen_index]["foreground"] = object.getTextColor()
+            C9_DISPLAY.SCREENS[terminal][screen][screen_index]["background"] = object.getBackgroundColor()
+
+            object.terminal.write(letter)
+        end
+        object.update(object.visible)
+    end;
 }
 
 --[[
@@ -500,31 +636,36 @@ display buffer.
 ]]
 
 function new(object)
-	-- # Declaring Local Variables: 
-	local object = object or {}
-	object.terminal_name = object.terminal_name or C9_DISPLAY.SCREEN_PROTOTYPE["terminal_name"]
+    -- # Declaring Local Variables: 
+    local object = object or {}
+    object.terminal_name = object.terminal_name or C9_DISPLAY.SCREEN_PROTOTYPE["terminal_name"]
 
-	-- # Checking Declared Variables:
-	if object and type(object) ~= "table" then
-		error("The provided argument must be a table!", 2)
-	end
+    -- # Checking Declared Variables:
+    if object and type(object) ~= "table" then
+        error("The provided argument must be a table!", 2)
+    end
 
-	-- # Code:
+    -- # Code:
 
-	if not C9_DISPLAY.TERMINALS[object.terminal_name] then
-		create_terminal_table(object)
-	end
+    if not C9_DISPLAY.TERMINALS[object.terminal_name] then
+        create_terminal_table(object)
+    end
 
-	if object then
-		setmetatable(object, C9_DISPLAY.SCREEN_PROTOTYPE.mt)
+    if object then
+        setmetatable(object, C9_DISPLAY.SCREEN_PROTOTYPE.mt)
 
-		for k, v in pairs(_functions) do
-			object[k] = v
-		end
+        for k, v in pairs(_functions) do
+            object[k] = v
+        end
 
-		create_screen_table(object)
-		return object
-	end
+        object.isScreen = true
+        object.xPos = object.startX
+        object.yPos = object.startY
+
+        create_screen_table(object)
+
+        return object
+    end
 end
 
 --[[
@@ -555,28 +696,25 @@ re-draw higher-priority pixels.
 ]]
 
 function draw_screen(object)
-	-- # Declaring Local Variables:
-	local w, h = object.terminal.getSize()
-	local screen = object.index
-	local terminal = object.terminal_name
+    -- # Declaring Local Variables:
+    local w, h = object.terminal.getSize()
+    local screen = object.index
+    local terminal = object.terminal_name
 
-	-- # Code:
-	for pixel = 1, #C9_DISPLAY.SCREENS[terminal][screen] do
-		object.terminal.setCursorPos(C9_DISPLAY.SCREENS[terminal][screen][pixel]["xPos"], C9_DISPLAY.SCREENS[terminal][screen][pixel]["yPos"])
-		object.terminal.setTextColor(C9_DISPLAY.SCREENS[terminal][screen][pixel]["foreground"])
-		object.terminal.setBackgroundColor(C9_DISPLAY.SCREENS[terminal][screen][pixel]["background"])
-		object.terminal.write(C9_DISPLAY.SCREENS[terminal][screen][pixel]["text"])
-	end
+    -- # Code:
+    for pixel = 1, #C9_DISPLAY.SCREENS[terminal][screen] do
+        object.terminal.setCursorPos(C9_DISPLAY.SCREENS[terminal][screen][pixel]["xPos"], C9_DISPLAY.SCREENS[terminal][screen][pixel]["yPos"])
+        object.terminal.setTextColor(C9_DISPLAY.SCREENS[terminal][screen][pixel]["foreground"])
+        object.terminal.setBackgroundColor(C9_DISPLAY.SCREENS[terminal][screen][pixel]["background"])
+        object.terminal.write(C9_DISPLAY.SCREENS[terminal][screen][pixel]["text"])
+    end
 end
 
--- >>> Developer Note: Update the functions in the local zones back to local after testing.
 --[[
 # To-Do List:
-- Add a visibility function to screen objects to manually
-be hidden and show lower priority windows that would be
-hidden otherwise.
-- Add a few more functions here and there when applicable
-situations arise. 
+- Have screens act similar to the term API such as
+avoiding needing to pass the ':' operator to pass
+an object. 
 ]]
 
 -- End of Document

@@ -1,0 +1,29 @@
+--[[
+# Window Library Documentation:
+
+The Window library is designed to provide unique
+and customizable windows. This library will give
+windows with scroll bar objects, button objects,
+and other internal goodies in addition to returning
+special event handlers for whatever you decide to use
+when handling internal events.
+<>
+]]
+
+--[[
+# Locally Scoped Variables:
+
+The following variables are scoped locally for the
+purpose of assisting the library.
+<>
+]]
+
+os.loadAPI("cloud9/environment/Reference")
+os.loadAPI(Reference.LIB_FRAMEWORK)
+os.loadAPI(Reference.LIB_SCREEN)
+
+--[[
+# Function:
+]]
+
+-- End of Document

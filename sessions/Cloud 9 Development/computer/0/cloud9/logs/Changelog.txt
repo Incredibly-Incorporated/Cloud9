@@ -1,3 +1,4 @@
+Version 0.0.8:
 > Changelog:
  - Fixed a bug in the Screen library that returned a misspelled variable. 
  - Made some local variable name changes to the display function in the Text library.
@@ -7,3 +8,35 @@
  - Added a Terminals.fw file to provide a hook when necessary. 
  - Added an 'adv_push' function to the Framework library for providing advanced
  table logging for developers.
+---
+Version 0.0.9:
+> Changelog:
+ - Renamed interal 'display' function in Screen library to 'update' to
+ provide better clarity of its purpose.
+ - Added code to 'update_visibility' function in Screen library.
+ - Added 'clear' function in the internal screen functions.
+ - Added infrastructure to new 'Craft' library.
+ - Added 'drawPixel' function to 'Craft' library.
+ - Added 'drawLine' function to 'Craft' library.
+ - Added 'drawBox' function to 'Craft' library.
+ - Added 'drawFilledBox' function to 'Craft' library.
+ - Added infrastructure to new 'Window' library.
+ - Added Test files to begin testing of new code.
+ - Added new index to screen objects labeled: 'isScreen' for hooks into other
+ libraries.
+ - Added 'getCursorPos' to internal screen objects in the Screen library.
+ - Added 'getBackgroundColor' to internal screen objects in the Screen library.
+ - Added 'getTextColor' to internal screen objects in the Screen library.
+ - Added 'sort', and 'key' parameters to Framework.push for those who want sorted tables.
+ - Added directory, 'Paint_Cloud9' for future 'Paint.Cloud9' program. 
+ Check function documentation for more details on to properly use this feature.
+ - Updated C9_DISPLAY.SCREEN_PROTOYPE for desirable defaults when constructing new screens.
+ - Updated Reference file to include new changes. 
+ - Updated files with tab characters to spaces for better transfers between GitHub,
+ IDE, and ComputerCraft.
+ - Updated 'adv_push' function in the Framework library with enhanced logic to be able to
+ handle nested tables.
+ - In the process of also adding enhanced logic to sorting tables in the 'push' function in
+ the Framework library. 
+ - In progress of testing Craft library. Both Screen library, and Craft library are very
+ unstable, and should not be used until otherwise noted.

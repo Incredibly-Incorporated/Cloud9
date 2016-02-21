@@ -1,0 +1,336 @@
+--[[
+# Craft Library Documentation:
+
+The Craft library is designed to handle all things
+paintutils, and then some. The goal of this library
+is to hook into the screen/text library to add
+infrastructure to displaying pixels in an advanced
+way via the Screen library. Anything you can do with
+paintutils, you can do with Craft. 
+<>
+]]
+
+--[[
+# Locally Scoped Variables:
+
+The following variables are scoped locally for the
+purpose of assisting the library.
+]]
+
+os.loadAPI("cloud9/environment/Reference")
+os.loadAPI(Reference.LIB_FRAMEWORK)
+os.loadAPI(Reference.LIB_SCREEN)
+
+--[[
+# Function: 'drawPixel', Documentation:
+
+This function is used to draw a pixel at the defined
+x, and y coords provided. A color can be specified,
+otherwise the current color of the terminal is used.
+
+> Parameters:
+
+[xPos]  : "The column in which to place the pixel."
+[yPos]  : "The row in which to place the pixel."
+[color] : "The color to make the pixel."
+[object]: "The screen object if applicable."
+
+> Returns:
+
+[N/a]: "No returns are available from this function."
+
+<>
+]]
+
+function drawPixel(xPos, yPos, color, object)
+    -- # Declaring Local Variables:
+    local terminal = term.current()
+
+    if object then
+        if object.isScreen then
+            terminal = object
+        end
+    end
+
+    local x, y = terminal.getCursorPos()
+    local xPos = xPos or x
+    local yPos = yPos or y
+
+    local curColor = terminal.getBackgroundColor()
+    local color = color or curColor
+
+    -- # Checking Declared Variables:
+    if type(xPos) ~= "number" then error("[xPos] must be type: number!", 2) end
+    if type(yPos) ~= "number" then error("[yPos] must be type: number!", 2) end
+    if type(color) ~= "number" then error("[color] must be type: number!", 2) end
+
+    -- # Code:
+    terminal.setCursorPos(xPos, yPos)
+    terminal.setBackgroundColor(color)
+    terminal.write(" ")
+end
+
+--[[
+# Function: 'drawLine', Documentation:
+
+This function is used to draw a line at the defined
+startX, and startY coords provided to the endX, and endY
+coords provided. A color can be specified, otherwise the 
+current color of the terminal is used.
+
+> Parameters:
+
+[startX]: "Which column to start drawing the line."
+[startY]: "Which row to start drawing the line."
+[endX]  : "The last column to stop drawing the line."
+[endY]  : "The last row to stop drawing the line."
+[color] : "The color the line will be."
+[object]: "The screen object if applicable."
+
+> Returns:
+
+[N/a]: "No returns are available from this function."
+
+<>
+]]
+
+function drawLine(startX, startY, endX, endY, color, object)
+    -- # Declaring Local Variables:
+    local terminal = term.current()
+    local object = object or nil
+
+    if object then
+        if object.isScreen then
+            terminal = object
+        end
+    end
+
+    local startX = math.floor(startX)
+    local startY = math.floor(startY)
+    local endX = math.floor(endX)
+    local endY = math.floor(endY)
+    local maxX = nil
+    local minX = math.min(startX, endX)
+    local maxY = nil
+    local minY = nil
+
+    local curColor = terminal.getBackgroundColor()
+    local color = color or curColor
+
+    -- # Checking Defined Variables:
+    if type(startX) ~= "number" then error("[startX] must be type: number!", 2) end
+    if type(startY) ~= "number" then error("[startY] must be type: number!", 2) end
+    if type(endX) ~= "number" then error("[endX] must be type: number!", 2) end
+    if type(endY) ~= "number" then error("[endY] must be type: number!", 2) end
+    if type(color) ~= "number" then error("[color] must be type: number!", 2) end
+
+    -- # Code:
+    if startX == endX and startY == endY then
+        drawPixel(startX, startY, color, object)
+        return
+    end
+    
+    if minX == startX then
+        minY = startY
+        maxX = endX
+        maxY = endY
+    else
+        minY = endY
+        maxX = startX
+        maxY = startY
+    end
+        
+    local xDiff = maxX - minX
+    local yDiff = maxY - minY
+            
+    if xDiff > math.abs(yDiff) then
+        local y = minY
+        local dy = yDiff / xDiff
+        for x = minX, maxX do
+            drawPixel(x, math.floor(y + 0.5), color, object)
+            y = y + dy
+        end
+    else
+        local x = minX
+        local dx = xDiff / yDiff
+        if maxY >= minY then
+            for y = minY, maxY do
+                drawPixel(math.floor(x + 0.5), y, color, object)
+                x = x + dx
+            end
+        else
+            for y = minY, maxY, -1 do
+                drawPixel(math.floor(x + 0.5), y, color, object)
+                x = x - dx
+            end
+        end
+    end
+end
+
+--[[
+# Function: 'drawBox', Documentation:
+
+This function is used to draw an open box at the
+defined coordinates.
+
+> Parameters:
+
+[startX]: "Which column to start drawing the line."
+[startY]: "Which row to start drawing the line."
+[endX]  : "The last column to stop drawing the line."
+[endY]  : "The last row to stop drawing the line."
+[color] : "The color the line will be."
+[object]: "The screen object if applicable."
+
+> Returns:
+
+[N/a]: "No returns are available from this function."
+
+<>
+]]
+
+function drawBox(startX, startY, endX, endY, color, object)
+    -- # Declaring Local Variables:
+    local terminal = term.current()
+    local object = object or nil
+
+    if object then
+        if object.isScreen then
+            terminal = object
+        end
+    end
+
+    local startX = math.floor(startX)
+    local startY = math.floor(startY)
+    local endX = math.floor(endX)
+    local endY = math.floor(endY)
+    local maxX = nil
+    local minX = math.min(startX, endX)
+    local maxY = nil
+    local minY = nil
+
+    local curColor = terminal.getBackgroundColor()
+    local color = color or curColor
+
+    -- # Checking Defined Variables:
+    if type(startX) ~= "number" then error("[startX] must be type: number!", 2) end
+    if type(startY) ~= "number" then error("[startY] must be type: number!", 2) end
+    if type(endX) ~= "number" then error("[endX] must be type: number!", 2) end
+    if type(endY) ~= "number" then error("[endY] must be type: number!", 2) end
+    if type(color) ~= "number" then error("[color] must be type: number!", 2) end
+
+    -- # Code:
+    if startX == endX and startY == endY then
+        drawPixel(startX, startY, color, object)
+        return
+    end
+
+    if minX == startX then
+        minY = startY
+        maxX = endX
+        maxY = endY
+    else
+        minY = endY
+        maxX = startX
+        maxY = startY
+    end
+
+    for x = minX, maxX do
+        drawPixel(x, minY, color, object)
+        drawPixel(x, maxY, color, object)
+    end
+
+    if (maxY - minY) >= 2 then
+        for y = (minY + 1), (maxY - 1) do
+            drawPixel(minX, y, color, object)
+            drawPixel(maxX, y, color, object)
+        end
+    end
+end
+
+--[[
+# Function: 'drawFilledBox', Documentation:
+
+This function is used to draw a filled box at the
+defined coordinates.
+
+> Parameters:
+
+[startX]: "Which column to start drawing the line."
+[startY]: "Which row to start drawing the line."
+[endX]  : "The last column to stop drawing the line."
+[endY]  : "The last row to stop drawing the line."
+[color] : "The color the line will be."
+[object]: "The screen object if applicable."
+
+> Returns:
+
+[N/a]: "No returns are available from this function."
+
+<>
+]]
+
+function drawFilledBox(startX, startY, endX, endY, color, object)
+    -- # Declaring Local Variables:
+    local terminal = term.current()
+    local object = object or nil
+
+    if object then
+        if object.isScreen then
+            terminal = object
+        end
+    end
+
+    local startX = math.floor(startX)
+    local startY = math.floor(startY)
+    local endX = math.floor(endX)
+    local endY = math.floor(endY)
+    local maxX = nil
+    local minX = math.min(startX, endX)
+    local maxY = nil
+    local minY = nil
+
+    local curColor = terminal.getBackgroundColor()
+    local color = color or curColor
+
+    -- # Checking Defined Variables:
+    if type(startX) ~= "number" then error("[startX] must be type: number!", 2) end
+    if type(startY) ~= "number" then error("[startY] must be type: number!", 2) end
+    if type(endX) ~= "number" then error("[endX] must be type: number!", 2) end
+    if type(endY) ~= "number" then error("[endY] must be type: number!", 2) end
+    if type(color) ~= "number" then error("[color] must be type: number!", 2) end
+
+    -- # Code:
+    if startX == endX and startY == endY then
+        drawPixel(startX, startY)
+        return
+    end
+
+    if minX == startX then
+        minY = startY
+        maxX = endX
+        maxY = endY
+    else
+        minY = endY
+        maxX = startX
+        maxY = startY
+    end
+
+    for x = minX, maxX do
+        for y = minY, maxY do
+            drawPixel(x, y, color, object)
+        end
+    end
+end
+
+--[[
+# To-Do List:
+
+- Implement imaging software into this library.
+Images will be created via Paint.Cloud9 (no pun intended),
+once that program is built.
+
+<>
+]]
+
+-- End of Document
