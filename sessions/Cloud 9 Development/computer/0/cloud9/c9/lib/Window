@@ -23,7 +23,202 @@ os.loadAPI(Reference.LIB_FRAMEWORK)
 os.loadAPI(Reference.LIB_SCREEN)
 
 --[[
-# Function:
+# Namespace: 'C9_WINDOWS', Documentation:
+
+This namespace is used as the parent of all
+windows.
+
+Object Indexes:
+    > ["name"]               : "The titlebar name of your window."
+    > ["width"]              : "How wide your window is."
+    > ["height"]             : "How tall your window is."
+    > ["startX"]             : "What column to place the left corner of the window in."
+    > ["startY"]             : "What row to place the left corner of the window in."
+    > ["content"]            : "What goes inside the window borders."
+    > ["titlebar_foreground"]: "The foreground color of your titlebar."
+    > ["titlebar_background"]: "The background color of your titlebar."
+    > ["window_foreground"]  : "The foreground color of your window content."
+    > ["window_background"]  : "The background color of your window content."
+    > ["center_content_horizontally"]
+    -->                      : "Whether or not to center text horizontally."
+    > ["center_content_vertically"]
+    -->                      : "Whether or not to center text vertically."
+    > ["window_can_move"]    : "Whether or not the window can be moved."
+    > ["window_can_resize"]  : "Whether or not the window is resizeable."
+    > ["window_can_minimize"]: "Whether or not the window can be hidden."
+    > ["window_can_maximize"]: "Whether or not the window can be full-screened."  
+<>
+]]
+
+_G.C9_WINDOWS = {}
+
+C9_WINDOWS.PROTOTYPE = {
+    ["name"] = "Window:";
+    ["width"] = 15;
+    ["height"] = 10;
+    ["startX"] = 5;
+    ["startY"] = 5;
+    ["content"] = "N/a";
+    ["titlebar_foreground"] = Reference.OS_DEFAULT_TITLEBAR_FOREGROUND;
+    ["titlebar_background"] = Reference.OS_DEFAULT_TITLEBAR_BACKGROUND;
+    ["window_foreground"] = Reference.OS_DEFAULT_WINDOW_FOREGROUND;
+    ["window_background"] = Reference.OS_DEFAULT_WINDOW_BACKGROUND;
+    ["center_content_horizontally"] = true;
+    ["center_content_vertically"] = true;
+    ["window_can_move"] = true;
+    ["window_can_resize"] = true;
+    ["window_can_minimize"] = true;
+    ["window_can_maximize"] = true;
+}
+C9_WINDOWS.mt = {
+    ["__index"] = C9_WINDOWS.PROTOTYPE
+}
+
+-- ============= -- LOCAL ZONE -- ============= --
+--[[
+The following functions are local to this library.
+They will not be needed in your screens, they
+are simply here to shorten the size of this file,
+and keep the code clean.
+<>
+]]
+
+--[[
+# Local Function: 'check', Documentation:
+
+This function is used to check the name of a new
+window object. It scans for a repeated number
+iterator, ex: "_#"; and adds on to this iterator
+if applicable.
+
+> Parameters:
+
+[name]: "The name to check."
+
+> Returns:
+
+[new_name]: "The changed name if applicable."
+<>
+]]
+
+local function check(name)
+    -- # Checking Local Variables:
+    if type(name) ~= "string" then 
+        error('[name] must be type: string | got: '..tostring(type(name))) 
+    end
+    
+    -- # Declaring Local Variables:
+    local name = tostring(name)
+    local new_name = nil    
+
+    -- # Code:
+    if #C9_WINDOWS > 1 then
+        for i = 1, #C9_WINDOWS do
+            local pulled_name = C9_WINDOWS[i]["name"]
+            if pulled_name == name then
+                if not name:find("_%d+$") then
+                    return name.."_1"
+                else
+                    local start, stop = name:find("_%d+$")
+                    local string_value = name:sub(1, start)
+                    local number_value = v:sub(start + 1, stop) + 1
+                    return tostring(string_value..number_value)
+                end
+            end
+        end
+    end
+
+    new_name = name
+
+    return new_name
+end
+
+-- =========== -- END LOCAL ZONE -- =========== --
+
+--[[
+# Function Table Documentation:
+
+This function table is used to manage windows via this
+library. The functions will be documented within the
+table.
+<>
+]]
+
+local _functions = {
+    --[[
+    // # Function: 'display', Documentation:
+    //
+    // This function is used to update the window
+    // when applicable.
+    //
+    // > Parameters:
+    //
+    // [object] : "The screen object."
+    // [visible]: "Whether or not to change visibility of the screen."
+    //
+    // > Returns:
+    //
+    // [N/a]: "No returns are available for this function."
+    // <>
+    ]]
+
+    display = function(object)
+        -- # Declaring Local Variables:
+        local winMinimize = "-"
+        local winMaximize = string.char(5)
+        local winClose = "×"
+
+        -- # Code:
+        -- Coming Soon!
+    end;
+}
+
+--[[
+# Function: 'new', Documentation:
+
+This function is used to provide an object in
+which the user can manage a window in the
+operating system. 
+
+> Parameters:
+
+[object]: "The table object you want to have
+           in OOP format."
+
+> Returns:
+[object]: "The provided table will be returned
+           in OOP format."
+
+<>
+]]
+
+function new(object)
+    -- # Declaring Local Variables:
+    local object = object or {}
+    
+    -- # Checking Local Variables:
+    if type(object) ~= "table" then 
+        error("[object] must be type: 'table' | got: '"..tostring(type(object)).."'") 
+    end
+
+    -- # Code:
+    setmetatable(object, C9_WINDOWS.mt)
+    object.name = check(object.name)
+
+    for k, v in pairs(_functions) do
+        object[k] = v
+    end
+
+    return object
+end
+
+--[[
+# To-Do List:
+
+1: Check the 'check' function to ensure that it
+changes strings, and returns them properly.
+
+<>
 ]]
 
 -- End of Document

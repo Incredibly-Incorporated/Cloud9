@@ -16,6 +16,10 @@ OS_LOG = "cloud9/logs/log.fw"
 -- OS Default Settings:
 OS_DEFAULT_BACKGROUNDCOLOR = colors.blue
 OS_DEFAULT_FOREGROUNDCOLOR = colors.orange
+OS_DEFAULT_TITLEBAR_BACKGROUND = colors.cyan
+OS_DEFAULT_TITLEBAR_FOREGROUND = colors.white
+OS_DEFAULT_WINDOW_BACKGROUND = colors.white
+OS_DEFAULT_WINDOW_FOREGROUND = colors.black
 
 -- OS Library Directory Files:
 LIB_CRAFT = "cloud9/c9/lib/Craft"
@@ -27,5 +31,6 @@ LIB_WINDOW = "cloud9/c9/lib/Window"
 -- OS Interface Directory Files:
 INT_SCREENS_FW = "cloud9/c9/interfaces/Screens.fw"
 INT_TERMINALS_FW = "cloud9/c9/interfaces/Terminals.fw"
+INT_WINDOWS_FW = "cloud9/c9/interfaces/Windows.fw"
 
 -- End of Document

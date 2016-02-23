@@ -1,11 +1,33 @@
 --[[
 Version: 0.0.1
+
 > Testing all functions to ensure everything works
 as intended...
+
 --- RESULTS ---
 > In progress of making screens act like similar to
 the term API in regards of having a terminal object,
 but not using the syntax for passing an object, <:>.
+
+===============
+
+Version: 0.0.2
+
+> Testing updated functions after v0.0.1.
+> This environmental beta file serves a dual purpose.
+It tests the compatibility between the Screen library
+and the Craft library. The successful mesh between
+these two libraries will mean that hooking into
+other scripts/libraries/interfaces/etc., will be
+a piece of cake!
+
+--- RESULTS ---
+> Everything works 99%. Left a to-do note to figure
+out where the tearing is coming from in the local
+'update_peripheral' function. This function was
+one of the first built functions of the Screen library
+and probably needs a re-write based off of internal
+changes to the library. 
 
 <>
 ]]
@@ -20,7 +42,7 @@ term.clear()
 
 local w, h = term.getSize()
 
-local new_screen = {
+local screen = {
     ["index"] = 1;
     ["terminal"] = term.current();
     ["terminal_name"] = "terminal";
@@ -28,31 +50,92 @@ local new_screen = {
     ["height"] = h;
     ["startX"] = 1;
     ["startY"] = 1;
-    ["text"] = " ";
     ["background"] = Reference.OS_DEFAULT_BACKGROUNDCOLOR;
     ["foreground"] = Reference.OS_DEFAULT_FOREGROUNDCOLOR;
     ["visible"] = true;
 }
 
-screen = Screen.new(new_screen)
+local ruler_screen = {
+    ["index"] = 2;
+    ["terminal"] = term.current();
+    ["terminal_name"] = "terminal";
+    ["width"] = 10;
+    ["height"] = 10;
+    ["startX"] = 1;
+    ["startY"] = 1;
+    ["background"] = Reference.OS_DEFAULT_BACKGROUNDCOLOR;
+    ["foreground"] = Reference.OS_DEFAULT_FOREGROUNDCOLOR;
+    ["visible"] = true;
+}
 
-screen.setCursorPos(1, 1)
-screen.setBackgroundColor(colors.black)
-screen.setTextColor(colors.white)
-screen.clear()
+screen = Screen.new(screen)
+screen_ruler = Screen.new(ruler_screen)
+
+screen:setCursorPos(1, 1)
+screen:setBackgroundColor(colors.black)
+screen:setTextColor(colors.white)
+screen:clearAll()
 
 for i = 1, 5 do
-    screen.setCursorPos(i, 1)
-    screen.write(i)
+    ruler_screen:setCursorPos(i, 1)
+    ruler_screen:write(i)
 end
 
 for i = 2, 5 do
-    screen.setCursorPos(1, i)
-    screen.write(i..":")
+    ruler_screen:setCursorPos(1, i)
+    ruler_screen:write(i..":")
 end
 
-Framework.adv_push(Reference.OS_LOG, screen, "New Screen Table")
-Craft.drawPixel(5, 5, colors.red, screen) sleep(3)
-Craft.drawLine(5, 5, 10, 10, colors.blue, screen) sleep(3)
+Craft.drawPixel(5, 5, colors.red, screen) sleep(1.5)
 
+local function drawRuler()
+    for i = 1, 10 do
+        ruler_screen:setCursorPos(i, 1)
+        if i == 10 then i = "-" end
+        ruler_screen:write(i)
+    end
+    
+    for i = 2, 10 do
+        ruler_screen:setCursorPos(1, i)
+        ruler_screen:write(i..":")
+    end
+end
+drawRuler()
+
+local function localClear()
+    screen:setBackgroundColor(colors.black)
+    screen:setTextColor(colors.white)
+    screen:clear()
+end
+
+Craft.drawLine(5, 5, 10, 10, colors.blue, screen) sleep(1.5)
+localClear()
+
+sleep(0.5)
+
+drawRuler()
+Craft.drawBox(5, 5, 10, 10, colors.green, screen)
+
+sleep(1)
+localClear()
+sleep(0.5)
+
+drawRuler()
+
+for i = 1, 10 do
+    local n = math.random(1, 10)
+    local nColor = 2^n
+
+    Craft.drawFilledBox(n, n, 5+n, 5+n, nColor, screen)
+    
+    sleep(1)
+    localClear()
+    drawRuler()
+end
+drawRuler()
+
+sleep(1)
+
+-- Continue testing Craft API, then do Window API, or add imaging
+-- capabilities to Craft API...
 -- End of Document

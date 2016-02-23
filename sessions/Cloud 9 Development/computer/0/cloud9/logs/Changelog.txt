@@ -40,3 +40,19 @@ Version 0.0.9:
  the Framework library. 
  - In progress of testing Craft library. Both Screen library, and Craft library are very
  unstable, and should not be used until otherwise noted.
+---
+[Alpha] Version 0.1.0:
+> Changelog:
+- Added [Alpha] headers to version numbers now...
+- Added an internal 'hook' function for screens that will interact with a library, interface, or program/script.
+- Added an internal 'clearAll' function for screens that need to be completely wiped.
+- Added an internal 'debug' function for screens that want to write interface information on disk.
+- Added 'track' function to Framework library for tracking updates to tables.
+- Added code infrastructure to the Window library.
+-> Testing will begin for Windows next version. 
+- Replaced null.txt in 'cloud9/assests' with cloud9.txt; I will leave that one a surprise...
+- Renamed 'adv_push' function in Framework library to 'log' for better representation of function.
+- Updated Craft library to hook into screens.
+- Updated Reference file to match directory/file changes.
+- Made massive local and internal function changes to Screen library to increase performance of screen writing.
+- Fixed more bugs in the Screen library as testing will continue...

@@ -44,12 +44,10 @@ otherwise the current color of the terminal is used.
 
 function drawPixel(xPos, yPos, color, object)
     -- # Declaring Local Variables:
-    local terminal = term.current()
+    local terminal = term.current() 
 
-    if object then
-        if object.isScreen then
-            terminal = object
-        end
+    if object and object.isScreen then
+        terminal = object:hook()
     end
 
     local x, y = terminal.getCursorPos()
@@ -99,10 +97,8 @@ function drawLine(startX, startY, endX, endY, color, object)
     local terminal = term.current()
     local object = object or nil
 
-    if object then
-        if object.isScreen then
-            terminal = object
-        end
+    if object and object.isScreen then
+        terminal = object:hook()
     end
 
     local startX = math.floor(startX)
@@ -194,10 +190,8 @@ function drawBox(startX, startY, endX, endY, color, object)
     local terminal = term.current()
     local object = object or nil
 
-    if object then
-        if object.isScreen then
-            terminal = object
-        end
+    if object and object.isScreen then
+        terminal = object:hook()
     end
 
     local startX = math.floor(startX)
@@ -275,10 +269,8 @@ function drawFilledBox(startX, startY, endX, endY, color, object)
     local terminal = term.current()
     local object = object or nil
 
-    if object then
-        if object.isScreen then
-            terminal = object
-        end
+    if object and object.isScreen then
+        terminal = object:hook()
     end
 
     local startX = math.floor(startX)
@@ -321,6 +313,49 @@ function drawFilledBox(startX, startY, endX, endY, color, object)
             drawPixel(x, y, color, object)
         end
     end
+end
+
+--[[
+# Function: 'loadImage', Documentation:
+
+This function is used to load an image for proper
+storage. 
+
+> Parameters:
+
+<<< COMING SOON! >>>
+
+> Returns:
+
+[N/a]: "No returns are available from this function... yet!"
+
+<>
+]]
+
+local function loadImage()
+    --
+end
+
+--[[
+# Function: 'drawImage', Documentation:
+
+This function is used to draw an image from specified
+path for rendering. Special effects can also be
+defined by the user. 
+
+> Parameters:
+
+<<< COMING SOON! >>>
+
+> Returns:
+
+[N/a]: "No returns are available from this function... yet!"
+
+<>
+]]
+
+local function drawImage()
+    --
 end
 
 --[[
